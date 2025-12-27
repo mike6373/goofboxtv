@@ -33,7 +33,7 @@
       max-height: 70%;
     }
 
-    /* TAP TO START (iOS ONLY) */
+    /* TAP TO START (iOS fallback) */
     #tapOverlay {
       position: fixed;
       inset: 0;
@@ -71,7 +71,7 @@
     <img src="logo.png" alt="GoofBox TV">
   </div>
 
-  <!-- TAP OVERLAY (iOS) -->
+  <!-- TAP OVERLAY (iOS fallback) -->
   <div id="tapOverlay">
     ▶ Tap to Start GoofBox TV
   </div>
@@ -303,10 +303,12 @@
       videoPlayer.src = videoLinks[index];
       videoPlayer.load();
 
-      const playPromise = videoPlayer.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {});
-      }
+      videoPlayer.addEventListener('canplay', () => {
+        videoPlayer.play().catch(() => {
+          // iOS blocked autoplay → show tap overlay
+          if (isIOS) tapOverlay.style.display = "flex";
+        });
+      }, { once: true });
 
       localStorage.setItem("lastVideoIndex", index);
     }
@@ -339,19 +341,21 @@
         splash.style.display = "none";
         playerWrapper.style.display = "block";
 
-        if (isIOS) {
-          tapOverlay.style.display = "flex";
-        } else {
-          startPlayback();
-        }
-      }, 1000);
-    }, 1500);
+        // Try auto-play
+        startPlayback();
+      }, 1000); // fade duration
+    }, 1500); // splash duration
 
     /* iOS TAP HANDLER */
     tapOverlay.addEventListener("click", () => {
       tapOverlay.style.display = "none";
-      videoPlayer.muted = false;
+      videoPlayer.muted = false; // unmute
       startPlayback();
+    });
+
+    /* Optional: detect playback error and fallback to tap overlay */
+    videoPlayer.addEventListener("error", () => {
+      if (isIOS) tapOverlay.style.display = "flex";
     });
   </script>
 
