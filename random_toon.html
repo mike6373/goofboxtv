@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Video Player</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+
+    /* SPLASH SCREEN */
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: #ff8c00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 1s ease;
+    }
+
+    #splash img {
+      max-width: 70%;
+      max-height: 70%;
+    }
+
+    /* PLAYER */
+    #playerWrapper {
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    #videoPlayer {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      background: black;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SPLASH / BOOT SCREEN -->
+  <div id="splash">
+    <img src="logo.png" alt="Logo">
+  </div>
+
+  <!-- VIDEO PLAYER -->
+  <div id="playerWrapper">
+    <video id="videoPlayer" controls autoplay></video>
+  </div>
+
+  <script>
+    const videoLinks = [
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E08.%20Lady%2C%20Play%20Your%20Mandolin%21%20%28Foxy%2C%20Roxy%29%28First%20MM%29%2813%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E09.%20Smile%2C%20Darn%20Ya%2C%20Smile%21%20%28Foxy%2C%20Roxy%29%2814%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E11.%20One%20More%20Time%20%28Foxy%2C%20Roxy%29%2816%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E13.%20You%20Don%27t%20Know%20What%20You%27re%20Doin%27%21%20%28Fluffy%2C%20Piggy%29%2818%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E17.%20Red%20Headed%20Baby%20%2822%29.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1932E04.%20Freddy%20the%20Freshman%20%2826%29.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1932E10.%20It%27s%20Got%20Me%20Again%21%20%2832%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1932E11.%20Moonlight%20for%20Two%20%28Goopy%29%2833%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1932E13.%20The%20Queen%20Was%20in%20the%20Parlor%20%28Goopy%29%2835%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1932E18.%20You%27re%20Too%20Careless%20with%20Your%20Kisses%21%20%2840%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1932E20.%20I%20Wish%20I%20Had%20Wings%20%2842%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1932E22.%20A%20Great%20Big%20Bunch%20of%20You%20%2844%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1935E20.%20Hollywood%20Capers%20%28Beans%2C%20Kitty%2C%20Oliver%29%28115%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1937E24.%20Get%20Rich%20Quick%20Porky%20%28Gabby%2C%20Porky%29%28174%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1937E26.%20Porky%27s%20Garden%20%28Porky%29%28176%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1937E28.%20I%20Wanna%20Be%20a%20Sailor%20%28178%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1939E04.%20Hamateur%20Night%20%28230%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1939E05.%20Robin%20Hood%20Makes%20Good%20%28231%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1939E07.%20Gold%20Rush%20Daze%20%28233%29.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1939E08.%20A%20Day%20at%20the%20Zoo%20%28234%29.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1939E10.%20Prest-O%20Change-O%20%28Bugs%29%28236%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1939E12.%20Bars%20and%20Stripes%20Forever%20%28238%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1939E13.%20Daffy%20Duck%20and%20the%20Dinosaur%20%28Daffy%29%28239%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1940E39.%20The%20Timid%20Toreador%20%28Porky%29%28309%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E05.%20The%20Haunted%20Mouse%20%28315%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E08.%20Joe%20Glow%2C%20the%20Firefly%20%28318%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E10.%20Porkys%20Bear%20Facts%20%28Porky%29%28320%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E16.%20Farm%20Frolics%20%28326%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E20.%20Porky%27s%20Prize%20Pony%20%28Porky%29%28330%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E27.%20Sport%20Chumpions%20%28337%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E28.%20The%20Henpecked%20Duck%20%28Daffy%2C%20Porky%29%28338%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E31.%20Notes%20to%20You%20%28Porky%29%28341%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1941E41.%20Porkys%20Pooch%20%28Porky%29%28351%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E02.%20Porkys%20Pastry%20Pirates%20%28Porky%29%28353%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E05.%20Who%27s%20Who%20in%20the%20Zoo%20%28Porky%29%28356%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E06.%20Porkys%20Cafe%20%28Porky%29%28357%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E09.%20The%20Wabbit%20Who%20Came%20To%20Supper%20%28Bugs%2C%20Elmer%29%28360%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E13.%20Daffy%27s%20Southern%20Exposure%20%28Daffy%29%28364%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E14.%20The%20Wacky%20Wabbit%20%28Bugs%2C%20Elmer%29%28365%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E17.%20Nutty%20News%20%28368%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E19.%20Hobby%20Horse%20Laffs%20%28370%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E20.%20Gopher%20Goofy%20%28371%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E24.%20Foney%20Fables%20%28375%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E29.%20Fox%20Pop%20%28380%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E30.%20The%20Impatient%20Patient%20%28Daffy%29%28381%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E31.%20The%20Dover%20Boys%20At%20Pimento%20University%20or%20The%20Rivals%20of%20Roquefort%20Hall%20%28Dover%20Boys%29%28382%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E33.%20The%20Sheepish%20Wolf%20%28384%29.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E36.%20A%20Tale%20of%20Two%20Kitties%20%28Tweety%29%28387%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E37.%20Ding%20Dog%20Daddy%20%28388%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1942E39.%20Case%20of%20the%20Missing%20Hare%20%28Bugs%29%28390%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E03.%20Pigs%20in%20a%20Polka%20%28393%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E05.%20To%20Duck%20Or%20Not%20To%20Duck%20%28Daffy%2C%20Elmer%29%28395%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E14.%20Yankee%20Doodle%20Daffy%20%28Daffy%2C%20Porky%29%28404%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E17.%20Wackiki%20Wabbit%20%28Bugs%29%28407%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E18.%20Porky%20Pigs%20Feat%20%28Daffy%2C%20Porky%29%28408%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E22%20A%20Corny%20Concerto%20%28Bugs%2C%20Daffy%2C%20Elmer%2C%20Porky%29%28412%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E24.%20Falling%20Hare%20%28Bugs%29%28414%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E28.%20Puss%20n%20Booty%20%28418%29%5BHD%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/1936E04.%20Boom%20Boom%20%28Beans%2C%20Porky%29%28123%29%5BHQ%5D.mp4",
+"https://archive.org/download/bugsbunny-friends_202511/1937E22.%20Porky%27s%20Railroad%20%28Porky%29%28172%29%5BHD%5D.mp4",
+"https://archive.org/download/popeye-pd/A%20Date%20To%20Skate%20%281938%29.mp4",
+"https://archive.org/download/popeye-pd/Aladdin%20And%20His%20Wonderful%20Lamp%20%281939%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/A%20Haul%20In%20One%20%281956%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Ancient%20Fistory%20%281953%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Assault%20And%20Flattery%20%281956%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Big%20Bad%20Sindbad%20%281952%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Bride%20And%20Gloom%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Cookin%27%20With%20Gags%20%281955%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Customers%20Wanted%20%281939%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Floor%20Flusher%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Fright%20To%20The%20Finish%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Gopher%20Spinach%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Greek%20Mirthology%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/I%20Don%27t%20Scare%20%281956%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/I%20Never%20Changes%20My%20Altitude%20%281937%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/I%27m%20In%20The%20Army%20Now%20%281936%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Insect%20To%20Injury%20%281956%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Let%27s%20Sing%20With%20Popeye%20%281934%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Little%20Swee%27Pea%20%281936%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Me%20Musical%20Nephews%20%281942%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Nearlyweds%20%281957%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Out%20To%20Punch%20%281956%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Parlez%20Vous%20Woo%20%281956%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Patriotic%20Popeye%20%281957%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Popeye%20For%20President%20%281956%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Popeye%20The%20Sailor%20Meets%20Ali%20Baba%27s%20Forty%20Thieves%20%281937%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Popeye%20The%20Sailor%20Meets%20Sindbad%20The%20Sailor%20%281936%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Popeye%27s%2020th%20Anniversary%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Private%20Eye%20Popeye%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Shuteye%20Popeye%20%281952%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Spooky%20Swabs%20%281957%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Spree%20Lunch%20%281957%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/Taxi-Turvy%20%281954%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/The%20Crystal%20Brawl%20%281957%29.mp4",
+"https://archive.org/download/popeye-pd/popeye-pd/The%20Paneless%20Window%20Washer%20%281937%29.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%201.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%2010.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%2011.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%2012.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%2013.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%202.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%203.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%204.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%205.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%206.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%207.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%208.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%209.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%201.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%2010.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%2011.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%2012.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%2013.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%202.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%203.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%204.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%205.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%206.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%208.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%202%2C%20Episode%209.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%201.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%2010.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%2011.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%2012.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%2013.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%202.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%203.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%204.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%205.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%206.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%207.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%208.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%203%2C%20Episode%209.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%201.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%2010.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%2011.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%2012.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%2013.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%202.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%203.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%204.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%205.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%206.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%207.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%208.mp4",
+"https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%209.mp4",
+"https://archive.org/download/threestoogespd/Three%20Stooges%20Cartoon%20-%20Season%202%20%20Ep%207.mp4",
+"https://archive.org/download/noveltoons-pd/004%20Suddenly%2C%20It%27s%20Spring%20-%20Raggedy%20Ann%20%281944-04-2.mp4",
+"https://archive.org/download/noveltoons-pd/013%20Old%20Macdonald%20Had%20A%20Farm%20%281946-06-07%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/001%20No%20Mutton%20Fer%20Nuttin%20-%20Blackie%20%26%20Wolfie%20%281943-11-26%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/002%20The%20Henpecked%20Rooster%20-%20Herman%20%26%20Henry%20%281944-02-18%29-1.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/005%20Yankee%20Doodle%20Donkey%20-%20Spunky%20%281944-10-27%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/007%20When%20G.I.%20Johnny%20Comes%20Home%20%281945-02-02%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/008%20Scrappily%20Married%20-%20Herman%20%26%20Henry%20%281945-03-30%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/009%20A%20Lamb%20in%20a%20Jam%20-%20Blackie%20%26%20Wolfie%20%281945-05-04%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/010%20A%20Self-Made%20Mongrel%20%281945-06-29%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/011%20The%20Friendly%20Ghost%20-%20Casper%20%20%281945-11-16%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/012%20Cheese%20Burglar%20-%20Herman%20%281946-02-22%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/014%20Sheep%20Shape%20-%20Blackie%20%26%20Wolfie%20%281946-06-28%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/015%20The%20Goal%20Rush%20%281946-09-27%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/016%20Spree%20For%20All%20%28Bw%29%20-%20Snuffy%20Smith%20%281946-10-04%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/017%20Sudden%20Fried%20Chicken%20-%20Herman%20%26%20Henry%20%281946-10-18%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/018%20The%20Stupidstitious%20Cat%20-%20Buzzy%20%281947-04-25%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/019%20The%20Enchanted%20Square%20-%20Raggedy%20Ann%20%281947-05-09%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/020%20Madhattan%20Island%20%281947-06-27%29-11.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/021%20Much%20Ado%20About%20Mutton%20-%20Blackie%20%26%20Wolfie%20%281947-07-25%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/022%20The%20Wee%20Men%20%281947-08-08%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/023%20The%20Mild%20West%20%281947-08-22%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/024%20Naughty%20But%20Mice%20-%20Herman%20%281947-10-10%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/025%20Santa%27s%20Surprise%20-%20Little%20Audrey%20%20%281947-12-07%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/027%20Flip%20Flap%20%281948-02-13%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/028%20We%27re%20In%20The%20Honey%20%281948-03-19%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/029%20The%20Bored%20Cuckoo%20%281948-04-09%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/030%20There%27s%20Good%20Boos%20Tonight%20%20-%20Casper%20%281948-04-23%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/031%20The%20Land%20Of%20The%20Lost%20%281948-05-07%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/032%20Butterscotch%20And%20Soda%20-%20Little%20Audrey%20%281948-06-04%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/033%20The%20Mite%20Makes%20Right%20%281948-10-15%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/034%20Hector%27s%20Hectic%20Life%20%281948-11-19%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/035%20The%20Old%20Shell%20Game%20%281948-12-17%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/036%20The%20Little%20Cut%20Up%20%281949-01-21%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/037%20Hep%20Cat%20Symphony%20%281949-02-04%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/038%20The%20Lost%20Dream%20-%20Little%20Audrey%20%281949-03-18%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/039%20Little%20Red%20School%20Mouse%20%281949-04-15%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/040%20A%20Haunting%20We%20Will%20Go%20-%20Casper%20%281949-05-13%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/042%20Campus%20Capers%20-%20Herman%20%281949-07-01%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/043%20Leprechaun%27s%20Gold%20%281949-10-14%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/044%20Song%20Of%20The%20Birds%20-%20Little%20Audrey%20%281949-10-14%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/045%20Land%20Of%20The%20Lost%20Jewels%20%281950-01-06%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/046%20Quack-a-Doodle-Doo%20-%20Baby%20Huey%20%281950-03-03%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/047%20Teacher%27s%20Pest%20%20-%20Junior%20%281950-03-31%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/049%20Ups%20an%27%20Downs%20Derby%20-%20Lightning%20%281950-06-09%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/050%20%20Pleased%20to%20Eat%20You%20-%20The%20Hungry%20Lion%20%281950-07-21%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/051%20Goofy%20Goofy%20Gander%20-%20Little%20Audrey%20%281950-08-18%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/052%20Saved%20By%20the%20Bell%20-%20Herman%20%281950-09-15%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/080%20Seapreme%20Court%20-%20Little%20Audrey%20%281954-01-29%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/081%20Crazytown%20%281954-02-06%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/099%20Pest%20Pupil%20-%20Baby%20Huey%20%281957-01-25%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/115%20Dawg%20Gawn%20-%20Little%20Audrey%20%281958-12-12%29.mp4",
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/Mice%20Capades%20%5BulORixwqAos%5D.mp4",
+"https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/Woody%20Woodpecker%20in%20Pantry%20Panic%20%28CENSORED%29%20%281941%29.mp4"
+    ];
+
+    const splash = document.getElementById("splash");
+    const playerWrapper = document.getElementById("playerWrapper");
+    const videoPlayer = document.getElementById("videoPlayer");
+
+    let lastIndex = localStorage.getItem("lastVideoIndex");
+
+    function playVideo(index) {
+      videoPlayer.src = videoLinks[index];
+      videoPlayer.load();
+      videoPlayer.play();
+      localStorage.setItem("lastVideoIndex", index);
+    }
+
+    function playRandomVideo() {
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * videoLinks.length);
+      } while (randomIndex == lastIndex && videoLinks.length > 1);
+
+      lastIndex = randomIndex;
+      playVideo(randomIndex);
+    }
+
+    videoPlayer.addEventListener("ended", playRandomVideo);
+
+    // BOOT SEQUENCE
+    setTimeout(() => {
+      splash.style.opacity = "0";
+
+      setTimeout(() => {
+        splash.style.display = "none";
+        playerWrapper.style.display = "block";
+
+        if (lastIndex !== null && videoLinks[lastIndex]) {
+          playVideo(lastIndex);
+        } else {
+          playRandomVideo();
+        }
+      }, 1000); // fade duration
+    }, 1500); // splash duration
+  </script>
+
+</body>
+</html>
