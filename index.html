@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoofBox TV (24/7 Cartoons!)</title>
+  <title>GoofBox TV</title>
 
   <style>
     html, body {
@@ -33,6 +33,22 @@
       max-height: 70%;
     }
 
+    /* TAP TO START (iOS ONLY) */
+    #tapOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 28px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9;
+      cursor: pointer;
+      text-align: center;
+    }
+
     /* PLAYER */
     #playerWrapper {
       width: 100%;
@@ -50,14 +66,25 @@
 </head>
 <body>
 
-  <!-- SPLASH / BOOT SCREEN -->
+  <!-- SPLASH -->
   <div id="splash">
-    <img src="logo.png" alt="Logo">
+    <img src="logo.png" alt="GoofBox TV">
   </div>
 
-  <!-- VIDEO PLAYER -->
+  <!-- TAP OVERLAY (iOS) -->
+  <div id="tapOverlay">
+    ▶ Tap to Start GoofBox TV
+  </div>
+
+  <!-- PLAYER -->
   <div id="playerWrapper">
-    <video id="videoPlayer" controls autoplay></video>
+    <video
+      id="videoPlayer"
+      controls
+      autoplay
+      muted
+      playsinline>
+    </video>
   </div>
 
   <script>
@@ -265,15 +292,22 @@
     ];
 
     const splash = document.getElementById("splash");
+    const tapOverlay = document.getElementById("tapOverlay");
     const playerWrapper = document.getElementById("playerWrapper");
     const videoPlayer = document.getElementById("videoPlayer");
 
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     let lastIndex = localStorage.getItem("lastVideoIndex");
 
     function playVideo(index) {
       videoPlayer.src = videoLinks[index];
       videoPlayer.load();
-      videoPlayer.play();
+
+      const playPromise = videoPlayer.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+
       localStorage.setItem("lastVideoIndex", index);
     }
 
@@ -287,9 +321,17 @@
       playVideo(randomIndex);
     }
 
+    function startPlayback() {
+      if (lastIndex !== null && videoLinks[lastIndex]) {
+        playVideo(lastIndex);
+      } else {
+        playRandomVideo();
+      }
+    }
+
     videoPlayer.addEventListener("ended", playRandomVideo);
 
-    // BOOT SEQUENCE
+    /* BOOT SEQUENCE */
     setTimeout(() => {
       splash.style.opacity = "0";
 
@@ -297,15 +339,21 @@
         splash.style.display = "none";
         playerWrapper.style.display = "block";
 
-        if (lastIndex !== null && videoLinks[lastIndex]) {
-          playVideo(lastIndex);
+        if (isIOS) {
+          tapOverlay.style.display = "flex";
         } else {
-          playRandomVideo();
+          startPlayback();
         }
-      }, 1000); // fade duration
-    }, 1500); // splash duration
+      }, 1000);
+    }, 1500);
+
+    /* iOS TAP HANDLER */
+    tapOverlay.addEventListener("click", () => {
+      tapOverlay.style.display = "none";
+      videoPlayer.muted = false;
+      startPlayback();
+    });
   </script>
 
 </body>
 </html>
-
