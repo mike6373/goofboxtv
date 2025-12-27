@@ -291,7 +291,6 @@
     const videoPlayer = document.getElementById("videoPlayer");
 
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    let lastIndex = localStorage.getItem("lastVideoIndex");
 
     // Set video size dynamically
     function resizeVideo() {
@@ -315,8 +314,6 @@
           });
         }
       }, { once: true });
-
-      localStorage.setItem("lastVideoIndex", index);
     }
 
     // Pick a random video
@@ -368,4 +365,5 @@
   </script>
 </body>
 </html>
+
 
