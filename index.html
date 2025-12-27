@@ -53,7 +53,7 @@
     #playerWrapper {
       width: 100%;
       height: 100%;
-      visibility: hidden; /* Keep rendered but hidden */
+      visibility: hidden; /* Keep rendered but hidden for iOS */
     }
 
     #videoPlayer {
@@ -71,20 +71,14 @@
     <img src="logo.png" alt="GoofBox TV">
   </div>
 
-  <!-- TAP OVERLAY (iOS fallback) -->
+  <!-- TAP OVERLAY (iOS only) -->
   <div id="tapOverlay">
     ▶ Tap to Start GoofBox TV
   </div>
 
-  <!-- PLAYER -->
+  <!-- VIDEO PLAYER -->
   <div id="playerWrapper">
-    <video
-      id="videoPlayer"
-      controls
-      autoplay
-      muted
-      playsinline>
-    </video>
+    <video id="videoPlayer" controls muted playsinline></video>
   </div>
 
   <script>
@@ -299,30 +293,38 @@
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     let lastIndex = localStorage.getItem("lastVideoIndex");
 
+    // Set video size dynamically
+    function resizeVideo() {
+      videoPlayer.style.width = window.innerWidth + "px";
+      videoPlayer.style.height = window.innerHeight + "px";
+    }
+    window.addEventListener("resize", resizeVideo);
+
+    // Play a specific video
     function playVideo(index) {
       videoPlayer.src = videoLinks[index];
       videoPlayer.load();
-
-      // Ensure correct dimensions for iOS
-      videoPlayer.style.width = window.innerWidth + "px";
-      videoPlayer.style.height = window.innerHeight + "px";
+      resizeVideo();
 
       videoPlayer.addEventListener('canplay', () => {
-        videoPlayer.play().catch(() => {
-          // iOS blocked autoplay → show tap overlay
-          if (isIOS) tapOverlay.style.display = "flex";
-        });
+        const promise = videoPlayer.play();
+        if (promise !== undefined) {
+          promise.catch(() => {
+            // iOS blocked autoplay → show overlay
+            if (isIOS) tapOverlay.style.display = "flex";
+          });
+        }
       }, { once: true });
 
       localStorage.setItem("lastVideoIndex", index);
     }
 
+    // Pick a random video
     function playRandomVideo() {
       let randomIndex;
       do {
         randomIndex = Math.floor(Math.random() * videoLinks.length);
       } while (randomIndex == lastIndex && videoLinks.length > 1);
-
       lastIndex = randomIndex;
       playVideo(randomIndex);
     }
@@ -337,37 +339,32 @@
 
     videoPlayer.addEventListener("ended", playRandomVideo);
 
-    /* BOOT SEQUENCE */
+    // Boot sequence
     setTimeout(() => {
       splash.style.opacity = "0";
-
       setTimeout(() => {
         splash.style.display = "none";
         playerWrapper.style.visibility = "visible";
 
-        // Try auto-play
-        startPlayback();
-      }, 1000); // fade duration
-    }, 1500); // splash duration
+        if (isIOS) {
+          tapOverlay.style.display = "flex"; // iOS always requires a tap
+        } else {
+          startPlayback(); // Android/Desktop autoplay
+        }
+      }, 1000);
+    }, 1500);
 
-    /* iOS TAP HANDLER */
+    // iOS tap overlay handler
     tapOverlay.addEventListener("click", () => {
       tapOverlay.style.display = "none";
       videoPlayer.muted = false; // unmute
       startPlayback();
     });
 
-    /* Optional: detect playback error and fallback to tap overlay */
+    // Error fallback
     videoPlayer.addEventListener("error", () => {
       if (isIOS) tapOverlay.style.display = "flex";
     });
-
-    /* Handle window resize (iOS viewport changes) */
-    window.addEventListener("resize", () => {
-      videoPlayer.style.width = window.innerWidth + "px";
-      videoPlayer.style.height = window.innerHeight + "px";
-    });
   </script>
-
 </body>
 </html>
