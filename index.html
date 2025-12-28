@@ -1,88 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoofBox TV</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoofBox TV</title>
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      overflow: hidden;
-    }
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
 
-    /* SPLASH SCREEN */
-    #splash {
-      position: fixed;
-      inset: 0;
-      background: #ff8c00;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      opacity: 1;
-      transition: opacity 1s ease;
-    }
+/* SPLASH SCREEN */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: #ff8c00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: opacity 1s ease;
+}
 
-    #splash img {
-      max-width: 70%;
-      max-height: 70%;
-    }
+#splash img {
+  max-width: 70%;
+  max-height: 70%;
+}
 
-    /* TAP TO START (iOS fallback) */
-    #tapOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      color: white;
-      font-family: Arial, sans-serif;
-      font-size: 28px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9;
-      cursor: pointer;
-      text-align: center;
-    }
+/* PLAYER WRAPPER */
+#playerWrapper {
+  width: 100%;
+  height: 100%;
+  display: none;
+  position: relative;
+  flex-direction: column;
+}
 
-    /* PLAYER */
-    #playerWrapper {
-      width: 100%;
-      height: 100%;
-      visibility: hidden; /* Keep rendered but hidden for iOS */
-    }
+/* VIDEO */
+#videoPlayer {
+  width: 100%;
+  height: calc(100vh - 100px);
+  object-fit: contain;
+  background: black;
+}
 
-    #videoPlayer {
-      width: 100vw;
-      height: 100vh;
-      object-fit: contain;
-      background: black;
-    }
-  </style>
+/* START MESSAGE (STATIC) */
+#startMessage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #00ff00;
+  background: rgba(0, 0, 0, 0.6);
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+  text-shadow: 0 0 12px #00ff00;
+}
+
+/* CONTROLS */
+#controls {
+  height: 100px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.control-btn {
+  font-size: 22px;
+  padding: 15px 20px;
+  background: #ff8c00;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+  background: #ffa733;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- SPLASH -->
-  <div id="splash">
-    <img src="logo.png" alt="GoofBox TV">
+<!-- SPLASH -->
+<div id="splash">
+  <img src="logo.png" alt="Logo">
+</div>
+
+<!-- PLAYER -->
+<div id="playerWrapper">
+
+  <!-- START MESSAGE -->
+  <div id="startMessage">
+    ▶ Press PLAY to start watching fun cartoons!
   </div>
 
-  <!-- TAP OVERLAY (iOS only) -->
-  <div id="tapOverlay">
-    ▶ Tap to Start GoofBox TV
-  </div>
+  <video id="videoPlayer" autoplay></video>
 
-  <!-- VIDEO PLAYER -->
-  <div id="playerWrapper">
-    <video id="videoPlayer" playsinline></video>
+  <!-- CONTROLS -->
+  <div id="controls">
+    <button class="control-btn" id="prev">⏮</button>
+    <button class="control-btn" id="rewind">⏪</button>
+    <button class="control-btn" id="playPause">⏯</button>
+    <button class="control-btn" id="forward">⏩</button>
+    <button class="control-btn" id="next">⏭</button>
   </div>
+</div>
 
-  <script>
-    const videoLinks = [
+<script>
+const videoLinks = [
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E08.%20Lady%2C%20Play%20Your%20Mandolin%21%20%28Foxy%2C%20Roxy%29%28First%20MM%29%2813%29%5BHD%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E09.%20Smile%2C%20Darn%20Ya%2C%20Smile%21%20%28Foxy%2C%20Roxy%29%2814%29%5BHD%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E11.%20One%20More%20Time%20%28Foxy%2C%20Roxy%29%2816%29%5BHQ%5D.mp4",
@@ -283,89 +321,93 @@
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/115%20Dawg%20Gawn%20-%20Little%20Audrey%20%281958-12-12%29.mp4",
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/Mice%20Capades%20%5BulORixwqAos%5D.mp4",
 "https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/Woody%20Woodpecker%20in%20Pantry%20Panic%20%28CENSORED%29%20%281941%29.mp4"
-    ];
 
-    const splash = document.getElementById("splash");
-    const tapOverlay = document.getElementById("tapOverlay");
-    const playerWrapper = document.getElementById("playerWrapper");
-    const videoPlayer = document.getElementById("videoPlayer");
 
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    let lastIndex = localStorage.getItem("lastVideoIndex");
+];
 
-    // Set video size dynamically
-    function resizeVideo() {
-      videoPlayer.style.width = window.innerWidth + "px";
-      videoPlayer.style.height = window.innerHeight + "px";
+const splash = document.getElementById("splash");
+const playerWrapper = document.getElementById("playerWrapper");
+const videoPlayer = document.getElementById("videoPlayer");
+const startMessage = document.getElementById("startMessage");
+
+const playPauseBtn = document.getElementById("playPause");
+const rewindBtn = document.getElementById("rewind");
+const forwardBtn = document.getElementById("forward");
+const nextBtn = document.getElementById("next");
+const prevBtn = document.getElementById("prev");
+
+let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || 0;
+
+/* PLAY VIDEO */
+function playVideo(index) {
+  lastIndex = index;
+  videoPlayer.src = videoLinks[index];
+  videoPlayer.load();
+  videoPlayer.play();
+  localStorage.setItem("lastVideoIndex", index);
+}
+
+/* RANDOM VIDEO */
+function playRandomVideo() {
+  let randomIndex;
+  do {
+    randomIndex = Math.floor(Math.random() * videoLinks.length);
+  } while (randomIndex === lastIndex && videoLinks.length > 1);
+
+  playVideo(randomIndex);
+}
+
+/* PREVIOUS VIDEO */
+function playPrevious() {
+  let prevIndex = lastIndex - 1;
+  if (prevIndex < 0) prevIndex = videoLinks.length - 1;
+  playVideo(prevIndex);
+}
+
+/* BUTTON EVENTS */
+playPauseBtn.onclick = () => {
+  if (videoPlayer.paused) {
+    videoPlayer.play();
+  } else {
+    videoPlayer.pause();
+  }
+};
+
+rewindBtn.onclick = () => {
+  videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+};
+
+forwardBtn.onclick = () => {
+  videoPlayer.currentTime = Math.min(
+    videoPlayer.duration,
+    videoPlayer.currentTime + 10
+  );
+};
+
+nextBtn.onclick = playRandomVideo;
+prevBtn.onclick = playPrevious;
+
+/* EVENTS */
+videoPlayer.addEventListener("ended", playRandomVideo);
+
+videoPlayer.addEventListener("play", () => {
+  startMessage.style.display = "none";
+});
+
+/* BOOT SEQUENCE */
+setTimeout(() => {
+  splash.style.opacity = "0";
+
+  setTimeout(() => {
+    splash.style.display = "none";
+    playerWrapper.style.display = "flex";
+
+    if (videoLinks.length > 0) {
+      playVideo(lastIndex);
     }
-    window.addEventListener("resize", resizeVideo);
+  }, 1000);
+}, 1500);
+</script>
 
-    // Play a specific video
-    function playVideo(index) {
-      videoPlayer.src = videoLinks[index];
-      videoPlayer.load();
-      resizeVideo();
-
-      videoPlayer.addEventListener('canplay', () => {
-        const promise = videoPlayer.play();
-        if (promise !== undefined) {
-          promise.catch(() => {
-            // iOS blocked autoplay → show overlay
-            if (isIOS) tapOverlay.style.display = "flex";
-          });
-        }
-      }, { once: true });
-
-      localStorage.setItem("lastVideoIndex", index);
-    }
-
-    // Pick a random video
-    function playRandomVideo() {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * videoLinks.length);
-      } while (randomIndex == lastIndex && videoLinks.length > 1);
-      lastIndex = randomIndex;
-      playVideo(randomIndex);
-    }
-
-    function startPlayback() {
-      if (lastIndex !== null && videoLinks[lastIndex]) {
-        playVideo(lastIndex);
-      } else {
-        playRandomVideo();
-      }
-    }
-
-    videoPlayer.addEventListener("ended", playRandomVideo);
-
-    // Boot sequence
-    setTimeout(() => {
-      splash.style.opacity = "0";
-      setTimeout(() => {
-        splash.style.display = "none";
-        playerWrapper.style.visibility = "visible";
-
-        if (isIOS) {
-          tapOverlay.style.display = "flex"; // iOS always requires a tap
-        } else {
-          startPlayback(); // Android/Desktop autoplay
-        }
-      }, 1000);
-    }, 1500);
-
-    // iOS tap overlay handler
-    tapOverlay.addEventListener("click", () => {
-      tapOverlay.style.display = "none";
-      videoPlayer.muted = false; // unmute
-      startPlayback();
-    });
-
-    // Error fallback
-    videoPlayer.addEventListener("error", () => {
-      if (isIOS) tapOverlay.style.display = "flex";
-    });
-  </script>
 </body>
 </html>
-
