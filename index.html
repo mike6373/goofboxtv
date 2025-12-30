@@ -39,13 +39,20 @@ html, body {
   height: 100%;
   display: none;
   position: relative;
+  flex-direction: row;
+}
+
+/* LEFT SIDE (VIDEO + CONTROLS) */
+#leftPanel {
+  flex: 1;
+  display: flex;
   flex-direction: column;
 }
 
 /* VIDEO */
 #videoPlayer {
   width: 100%;
-  height: calc(100vh - 190px); /* leave room for marathons + controls */
+  height: calc(100vh - 120px);
   object-fit: contain;
   background: black;
 }
@@ -66,35 +73,9 @@ html, body {
   text-shadow: 0 0 12px #00ff00;
 }
 
-/* MARATHON BUTTONS */
-#marathons {
-  height: 90px;
-  background: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 18px;
-  border-bottom: 2px solid #222;
-}
-
-.marathon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.marathon-btn img {
-  height: 60px;
-  width: auto;
-}
-
-.marathon-btn:active img {
-  transform: scale(0.9);
-}
-
 /* CONTROLS */
 #controls {
-  height: 100px;
+  height: 120px;
   background: #111;
   display: flex;
   align-items: center;
@@ -115,6 +96,33 @@ html, body {
   transform: scale(0.95);
   background: #ffa733;
 }
+
+/* RIGHT SIDE MARATHON BAR */
+#marathons {
+  width: 120px;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  border-left: 2px solid #222;
+}
+
+.marathon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.marathon-btn img {
+  width: 80px;
+  height: auto;
+}
+
+.marathon-btn:active img {
+  transform: scale(0.9);
+}
 </style>
 </head>
 
@@ -133,10 +141,23 @@ html, body {
     ▶ Press PLAY to start watching fun cartoons!
   </div>
 
-  <!-- VIDEO -->
-  <video id="videoPlayer" autoplay></video>
+  <!-- LEFT PANEL -->
+  <div id="leftPanel">
 
-  <!-- MARATHON BUTTONS -->
+    <!-- VIDEO -->
+    <video id="videoPlayer" autoplay></video>
+
+    <!-- CONTROLS -->
+    <div id="controls">
+      <button class="control-btn" id="prev">⏮</button>
+      <button class="control-btn" id="rewind">⏪</button>
+      <button class="control-btn" id="playPause">⏯</button>
+      <button class="control-btn" id="forward">⏩</button>
+      <button class="control-btn" id="next">⏭</button>
+    </div>
+  </div>
+
+  <!-- RIGHT MARATHONS -->
   <div id="marathons">
     <button class="marathon-btn" data-playlist="all">
       <img src="icons/all.png" alt="All Cartoons">
@@ -153,15 +174,6 @@ html, body {
     <button class="marathon-btn" data-playlist="stooges">
       <img src="icons/stooges.png" alt="Three Stooges">
     </button>
-  </div>
-
-  <!-- CUSTOM CONTROLS -->
-  <div id="controls">
-    <button class="control-btn" id="prev">⏮</button>
-    <button class="control-btn" id="rewind">⏪</button>
-    <button class="control-btn" id="playPause">⏯</button>
-    <button class="control-btn" id="forward">⏩</button>
-    <button class="control-btn" id="next">⏭</button>
   </div>
 </div>
 
@@ -591,14 +603,14 @@ const forwardBtn = document.getElementById("forward");
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
 
-// ======= PLAYLIST STATE =======
+// ======= STATE =======
 let currentPlaylistName = localStorage.getItem("playlist") || "all";
 let currentPlaylist = playlists[currentPlaylistName];
 let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
 
-// ======= PLAY RANDOM VIDEO FROM CURRENT PLAYLIST =======
+// ======= FUNCTIONS =======
 function playRandomFromPlaylist() {
-  if (currentPlaylist.length === 0) return;
+  if (!currentPlaylist || currentPlaylist.length === 0) return;
 
   let index;
   do {
@@ -611,66 +623,46 @@ function playRandomFromPlaylist() {
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
-// ======= PLAY PREVIOUS VIDEO =======
 function playPrevious() {
-  if (currentPlaylist.length === 0) return;
-  let prevIndex = lastIndex - 1;
-  if (prevIndex < 0) prevIndex = currentPlaylist.length - 1;
-  lastIndex = prevIndex;
-  videoPlayer.src = currentPlaylist[prevIndex];
+  if (!currentPlaylist || currentPlaylist.length === 0) return;
+  lastIndex = (lastIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+  videoPlayer.src = currentPlaylist[lastIndex];
   videoPlayer.play();
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
-// ======= BUTTON EVENTS =======
-playPauseBtn.onclick = () => {
-  if (videoPlayer.paused) videoPlayer.play();
-  else videoPlayer.pause();
-};
-
-rewindBtn.onclick = () => {
-  videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
-};
-
-forwardBtn.onclick = () => {
-  videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
-};
-
+// ======= CONTROLS =======
+playPauseBtn.onclick = () => videoPlayer.paused ? videoPlayer.play() : videoPlayer.pause();
+rewindBtn.onclick = () => videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
+forwardBtn.onclick = () => videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
 nextBtn.onclick = playRandomFromPlaylist;
 prevBtn.onclick = playPrevious;
 
-// ======= MARATHON BUTTON EVENTS =======
+// ======= MARATHONS =======
 document.querySelectorAll(".marathon-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
+  btn.onclick = () => {
     const name = btn.dataset.playlist;
     currentPlaylistName = name;
     currentPlaylist = playlists[name];
     localStorage.setItem("playlist", name);
     playRandomFromPlaylist();
-  });
+  };
 });
 
-// ======= VIDEO EVENTS =======
+// ======= EVENTS =======
 videoPlayer.addEventListener("ended", playRandomFromPlaylist);
+videoPlayer.addEventListener("play", () => startMessage.style.display = "none");
 
-videoPlayer.addEventListener("play", () => {
-  startMessage.style.display = "none";
-});
-
-// ======= BOOT SEQUENCE =======
+// ======= BOOT =======
 setTimeout(() => {
   splash.style.opacity = "0";
   setTimeout(() => {
     splash.style.display = "none";
     playerWrapper.style.display = "flex";
-
-    if (currentPlaylist.length > 0) {
-      playRandomFromPlaylist();
-    }
+    playRandomFromPlaylist();
   }, 1000);
 }, 1500);
 </script>
 
 </body>
 </html>
-
