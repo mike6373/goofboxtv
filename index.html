@@ -42,11 +42,12 @@ html, body {
   flex-direction: row;
 }
 
-/* LEFT SIDE (VIDEO + CONTROLS) */
+/* LEFT PANEL */
 #leftPanel {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* VIDEO */
@@ -69,6 +70,22 @@ html, body {
   background: rgba(0, 0, 0, 0.6);
   text-align: center;
   z-index: 5;
+  pointer-events: none;
+  text-shadow: 0 0 12px #00ff00;
+}
+
+/* LOADING MESSAGE */
+#loadingMessage {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #00ff00;
+  background: rgba(0, 0, 0, 0.6);
+  text-align: center;
+  z-index: 6;
   pointer-events: none;
   text-shadow: 0 0 12px #00ff00;
 }
@@ -136,16 +153,17 @@ html, body {
 <!-- PLAYER -->
 <div id="playerWrapper">
 
-  <!-- START MESSAGE -->
-  <div id="startMessage">
-    ▶ Press PLAY to start watching fun cartoons!
-  </div>
-
   <!-- LEFT PANEL -->
   <div id="leftPanel">
 
     <!-- VIDEO -->
     <video id="videoPlayer" autoplay></video>
+
+    <!-- START & LOADING MESSAGES -->
+    <div id="startMessage">
+      ▶ Press PLAY to start watching fun cartoons!
+    </div>
+    <div id="loadingMessage">Loading...</div>
 
     <!-- CONTROLS -->
     <div id="controls">
@@ -154,6 +172,7 @@ html, body {
       <button class="control-btn" id="playPause">⏯</button>
       <button class="control-btn" id="forward">⏩</button>
       <button class="control-btn" id="next">⏭</button>
+      <button class="control-btn" id="aboutBtn">ℹ️ About</button>
     </div>
   </div>
 
@@ -166,15 +185,21 @@ html, body {
       <img src="icons/looney.png" alt="Looney Tunes">
     </button>
     <button class="marathon-btn" data-playlist="popeye">
-      <img src="icons/popeye.PNG" alt="Popeye">
+      <img src="icons/popeye.png" alt="Popeye">
     </button>
     <button class="marathon-btn" data-playlist="noveltoons">
-      <img src="icons/noveltoons.PNG" alt="Noveltoons">
+      <img src="icons/noveltoons.png" alt="Noveltoons">
     </button>
     <button class="marathon-btn" data-playlist="stooges">
       <img src="icons/stooges.png" alt="Three Stooges">
     </button>
   </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div id="aboutModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); color:#00ff00; font-size:22px; text-align:center; padding:30px; overflow:auto; z-index:20;">
+  <button onclick="closeAbout()" style="position:absolute; top:20px; right:20px; font-size:22px; padding:10px; background:#ff8c00; border:none; border-radius:12px; cursor:pointer;">Close</button>
+  <div id="aboutContent"></div>
 </div>
 
 <script>
@@ -443,7 +468,7 @@ const playlists = {
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E28.%20Puss%20n%20Booty%20%28418%29%5BHD%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/1936E04.%20Boom%20Boom%20%28Beans%2C%20Porky%29%28123%29%5BHQ%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/1937E22.%20Porky%27s%20Railroad%20%28Porky%29%28172%29%5BHD%5D.mp4"
-  ],
+],
   popeye: [
 "https://archive.org/download/popeye-pd/A%20Date%20To%20Skate%20%281938%29.mp4",
 "https://archive.org/download/popeye-pd/Aladdin%20And%20His%20Wonderful%20Lamp%20%281939%29.mp4",
@@ -480,7 +505,7 @@ const playlists = {
 "https://archive.org/download/popeye-pd/popeye-pd/Taxi-Turvy%20%281954%29.mp4",
 "https://archive.org/download/popeye-pd/popeye-pd/The%20Crystal%20Brawl%20%281957%29.mp4",
 "https://archive.org/download/popeye-pd/popeye-pd/The%20Paneless%20Window%20Washer%20%281937%29.mp4"
-  ],
+],
   noveltoons: [
 "https://archive.org/download/noveltoons-pd/004%20Suddenly%2C%20It%27s%20Spring%20-%20Raggedy%20Ann%20%281944-04-2.mp4",
 "https://archive.org/download/noveltoons-pd/013%20Old%20Macdonald%20Had%20A%20Farm%20%281946-06-07%29.mp4",
@@ -534,7 +559,7 @@ const playlists = {
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/099%20Pest%20Pupil%20-%20Baby%20Huey%20%281957-01-25%29.mp4",
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/115%20Dawg%20Gawn%20-%20Little%20Audrey%20%281958-12-12%29.mp4",
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/Mice%20Capades%20%5BulORixwqAos%5D.mp4"
-  ],
+],
   stooges: [
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%201.mp4",
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%2010.mp4",
@@ -588,7 +613,7 @@ const playlists = {
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%208.mp4",
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%209.mp4",
 "https://archive.org/download/threestoogespd/Three%20Stooges%20Cartoon%20-%20Season%202%20%20Ep%207.mp4"
-  ]
+]
 };
 
 // ======= ELEMENTS =======
@@ -596,19 +621,23 @@ const splash = document.getElementById("splash");
 const playerWrapper = document.getElementById("playerWrapper");
 const videoPlayer = document.getElementById("videoPlayer");
 const startMessage = document.getElementById("startMessage");
+const loadingMessage = document.getElementById("loadingMessage");
 
 const playPauseBtn = document.getElementById("playPause");
 const rewindBtn = document.getElementById("rewind");
 const forwardBtn = document.getElementById("forward");
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
+const aboutBtn = document.getElementById("aboutBtn");
 
-// ======= STATE =======
 let currentPlaylistName = localStorage.getItem("playlist") || "all";
 let currentPlaylist = playlists[currentPlaylistName];
 let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
 
 // ======= FUNCTIONS =======
+function showLoading() { loadingMessage.style.display = "flex"; }
+function hideLoading() { loadingMessage.style.display = "none"; }
+
 function playRandomFromPlaylist() {
   if (!currentPlaylist || currentPlaylist.length === 0) return;
 
@@ -619,7 +648,12 @@ function playRandomFromPlaylist() {
 
   lastIndex = index;
   videoPlayer.src = currentPlaylist[index];
-  videoPlayer.play();
+  showLoading();
+  videoPlayer.load();
+  videoPlayer.oncanplay = () => {
+    hideLoading();
+    videoPlayer.play();
+  };
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
@@ -627,7 +661,12 @@ function playPrevious() {
   if (!currentPlaylist || currentPlaylist.length === 0) return;
   lastIndex = (lastIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
   videoPlayer.src = currentPlaylist[lastIndex];
-  videoPlayer.play();
+  showLoading();
+  videoPlayer.load();
+  videoPlayer.oncanplay = () => {
+    hideLoading();
+    videoPlayer.play();
+  };
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
@@ -649,9 +688,23 @@ document.querySelectorAll(".marathon-btn").forEach(btn => {
   };
 });
 
-// ======= EVENTS =======
+// ======= VIDEO EVENTS =======
 videoPlayer.addEventListener("ended", playRandomFromPlaylist);
 videoPlayer.addEventListener("play", () => startMessage.style.display = "none");
+
+// ======= ABOUT BUTTON =======
+aboutBtn.onclick = () => {
+  fetch('about.txt')
+    .then(resp => resp.text())
+    .then(text => {
+      document.getElementById("aboutContent").innerHTML = text + "<br><br>Email for support: support@example.com";
+      document.getElementById("aboutModal").style.display = "block";
+    });
+};
+
+function closeAbout() {
+  document.getElementById("aboutModal").style.display = "none";
+}
 
 // ======= BOOT =======
 setTimeout(() => {
