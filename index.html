@@ -141,23 +141,20 @@ html, body {
   transform: scale(0.9);
 }
 
-/* ABOUT MODAL */
-#aboutModal {
+/* ABOUT SCREEN */
+#aboutScreen {
   display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.95);
+  background: black;
   color: #00ff00;
-  font-size: 22px;
-  text-align: left;
-  padding: 60px 30px 30px 30px; /* space for close button */
+  height: 100vh;
   overflow-y: auto;
-  z-index: 20;
+  padding: 40px 30px;
+  font-size: 22px;
   line-height: 1.6;
 }
 
-#aboutModal button {
-  position: absolute;
+#aboutScreen button {
+  position: fixed;
   top: 20px;
   right: 20px;
   font-size: 22px;
@@ -168,23 +165,18 @@ html, body {
   cursor: pointer;
 }
 
-#aboutContent {
-  margin-top: 20px;
-  white-space: pre-line;
-}
-
-/* Fun headings for Goofbox style */
-#aboutContent h1 {
+/* About headings */
+#aboutScreen h1 {
   font-size: 30px;
   text-align: center;
   margin-bottom: 15px;
 }
-#aboutContent h2 {
+#aboutScreen h2 {
   font-size: 24px;
   margin-top: 20px;
   margin-bottom: 10px;
 }
-#aboutContent p {
+#aboutScreen p {
   margin-bottom: 12px;
 }
 </style>
@@ -197,13 +189,10 @@ html, body {
   <img src="logo.png" alt="Logo">
 </div>
 
-<!-- PLAYER -->
+<!-- MAIN PLAYER -->
 <div id="playerWrapper">
-
   <!-- LEFT PANEL -->
   <div id="leftPanel">
-
-    <!-- VIDEO -->
     <video id="videoPlayer" autoplay></video>
 
     <!-- START & LOADING MESSAGES -->
@@ -243,36 +232,34 @@ html, body {
   </div>
 </div>
 
-<!-- ABOUT MODAL -->
-<div id="aboutModal">
-  <button onclick="closeAbout()">Close</button>
-  <div id="aboutContent">
-    <h1>🎉 Welcome to Goofbox TV! 🎉</h1>
-    <p>Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop from the comfort of your TV, tablet, or computer.</p>
+<!-- ABOUT SCREEN -->
+<div id="aboutScreen">
+  <button id="backBtn">⬅ Back</button>
+  <h1>🎉 Welcome to Goofbox TV! 🎉</h1>
+  <p>Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop from the comfort of your TV, tablet, or computer.</p>
 
-    <h2>Shows Included:</h2>
-    <p>- Looney Tunes<br>- Popeye<br>- Noveltoons<br>- The Three Stooges (60s series)<br>- A full randomized marathon of over 200 cartoons!</p>
+  <h2>Shows Included:</h2>
+  <p>- Looney Tunes<br>- Popeye<br>- Noveltoons<br>- The Three Stooges (60s series)<br>- 200+ cartoons in randomized marathon!</p>
 
-    <h2>Public Domain Info:</h2>
-    <p>All cartoons hosted here are <strong>public domain</strong>. Original studios either didn’t renew their copyrights, or the copyright notices were vague. The 1960s Three Stooges series has vague notices but is generally safe to watch.</p>
+  <h2>Public Domain Info:</h2>
+  <p>All cartoons are public domain. The 60s Three Stooges series has vague copyright notices but is safe to watch.</p>
 
-    <h2>Safe for Everyone:</h2>
-    <p>✅ Safe for kids and adults! Perfect for marathon viewing.</p>
+  <h2>Safe for Everyone:</h2>
+  <p>✅ Safe for kids and adults! Perfect for marathon viewing.</p>
 
-    <h2>Internet Required:</h2>
-    <p>🌐 An active internet connection is required to watch cartoons on Goofbox TV.</p>
+  <h2>Internet Required:</h2>
+  <p>🌐 Requires an active internet connection to watch cartoons on Goofbox TV.</p>
 
-    <h2>Features:</h2>
-    <p>- Custom video player with play, pause, rewind, forward, next, and previous buttons.<br>
-    - Vertical marathon selector bar.<br>
-    - “Loading…” indicator when videos are buffering.<br>
-    - Lightweight and TV-friendly interface.</p>
+  <h2>Features:</h2>
+  <p>- Custom video player with play, pause, rewind, forward, next, and previous buttons.<br>
+  - Vertical marathon selector bar.<br>
+  - “Loading…” indicator when videos are buffering.<br>
+  - Lightweight and TV-friendly interface.</p>
 
-    <h2>Support:</h2>
-    <p>If you encounter any bugs, glitches, or have questions, email us at: <strong>eclipiastudios@gmail.com</strong></p>
+  <h2>Support:</h2>
+  <p>If you encounter bugs or glitches, email: <strong>eclipiastudios@gmail.com</strong></p>
 
-    <p>🚀 Sit back, relax, and enjoy the cartoons!</p>
-  </div>
+  <p>🚀 Sit back, relax, and enjoy the cartoons!</p>
 </div>
 
 <script>
@@ -695,16 +682,18 @@ const playerWrapper = document.getElementById("playerWrapper");
 const videoPlayer = document.getElementById("videoPlayer");
 const startMessage = document.getElementById("startMessage");
 const loadingMessage = document.getElementById("loadingMessage");
-const aboutBtn = document.getElementById("aboutBtn");
 
-// Controls
 const playPauseBtn = document.getElementById("playPause");
 const rewindBtn = document.getElementById("rewind");
 const forwardBtn = document.getElementById("forward");
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
 
-// Playlist state
+const aboutBtn = document.getElementById("aboutBtn");
+const aboutScreen = document.getElementById("aboutScreen");
+const backBtn = document.getElementById("backBtn");
+
+// ======= PLAYLIST STATE =======
 let currentPlaylistName = localStorage.getItem("playlist") || "all";
 let currentPlaylist = playlists[currentPlaylistName];
 let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
@@ -736,14 +725,14 @@ function playPrevious() {
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
-// Controls
+// ======= CONTROL EVENTS =======
 playPauseBtn.onclick = () => videoPlayer.paused ? videoPlayer.play() : videoPlayer.pause();
 rewindBtn.onclick = () => videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
 forwardBtn.onclick = () => videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
 nextBtn.onclick = playRandomFromPlaylist;
-prevBtn.onclick = playPrevious;
+prevBtn.onclick = playPrevious();
 
-// Marathon buttons
+// ======= MARATHON BUTTONS =======
 document.querySelectorAll(".marathon-btn").forEach(btn => {
   btn.onclick = () => {
     const name = btn.dataset.playlist;
@@ -754,20 +743,22 @@ document.querySelectorAll(".marathon-btn").forEach(btn => {
   };
 });
 
-// Video events
+// ======= VIDEO EVENTS =======
 videoPlayer.addEventListener("ended", playRandomFromPlaylist);
 videoPlayer.addEventListener("play", () => startMessage.style.display = "none");
 
-// About modal
+// ======= ABOUT SCREEN EVENTS =======
 aboutBtn.onclick = () => {
-  document.getElementById("aboutModal").style.display = "block";
+  playerWrapper.style.display = "none";
+  aboutScreen.style.display = "block";
 };
 
-function closeAbout() {
-  document.getElementById("aboutModal").style.display = "none";
-}
+backBtn.onclick = () => {
+  aboutScreen.style.display = "none";
+  playerWrapper.style.display = "flex";
+};
 
-// Boot sequence
+// ======= BOOT SEQUENCE =======
 setTimeout(() => {
   splash.style.opacity = "0";
   setTimeout(() => {
