@@ -140,6 +140,53 @@ html, body {
 .marathon-btn:active img {
   transform: scale(0.9);
 }
+
+/* ABOUT MODAL */
+#aboutModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  color: #00ff00;
+  font-size: 22px;
+  text-align: left;
+  padding: 60px 30px 30px 30px; /* space for close button */
+  overflow-y: auto;
+  z-index: 20;
+  line-height: 1.6;
+}
+
+#aboutModal button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 22px;
+  padding: 10px 15px;
+  background: #ff8c00;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+#aboutContent {
+  margin-top: 20px;
+  white-space: pre-line;
+}
+
+/* Fun headings for Goofbox style */
+#aboutContent h1 {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+#aboutContent h2 {
+  font-size: 24px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+#aboutContent p {
+  margin-bottom: 12px;
+}
 </style>
 </head>
 
@@ -185,10 +232,10 @@ html, body {
       <img src="icons/looney.png" alt="Looney Tunes">
     </button>
     <button class="marathon-btn" data-playlist="popeye">
-      <img src="icons/popeye.png" alt="Popeye">
+      <img src="icons/popeye.PNG" alt="Popeye">
     </button>
     <button class="marathon-btn" data-playlist="noveltoons">
-      <img src="icons/noveltoons.png" alt="Noveltoons">
+      <img src="icons/noveltoons.PNG" alt="Noveltoons">
     </button>
     <button class="marathon-btn" data-playlist="stooges">
       <img src="icons/stooges.png" alt="Three Stooges">
@@ -197,9 +244,35 @@ html, body {
 </div>
 
 <!-- ABOUT MODAL -->
-<div id="aboutModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); color:#00ff00; font-size:22px; text-align:center; padding:30px; overflow:auto; z-index:20;">
-  <button onclick="closeAbout()" style="position:absolute; top:20px; right:20px; font-size:22px; padding:10px; background:#ff8c00; border:none; border-radius:12px; cursor:pointer;">Close</button>
-  <div id="aboutContent"></div>
+<div id="aboutModal">
+  <button onclick="closeAbout()">Close</button>
+  <div id="aboutContent">
+    <h1>🎉 Welcome to Goofbox TV! 🎉</h1>
+    <p>Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop from the comfort of your TV, tablet, or computer.</p>
+
+    <h2>Shows Included:</h2>
+    <p>- Looney Tunes<br>- Popeye<br>- Noveltoons<br>- The Three Stooges (60s series)<br>- A full randomized marathon of over 200 cartoons!</p>
+
+    <h2>Public Domain Info:</h2>
+    <p>All cartoons hosted here are <strong>public domain</strong>. Original studios either didn’t renew their copyrights, or the copyright notices were vague. The 1960s Three Stooges series has vague notices but is generally safe to watch.</p>
+
+    <h2>Safe for Everyone:</h2>
+    <p>✅ Safe for kids and adults! Perfect for marathon viewing.</p>
+
+    <h2>Internet Required:</h2>
+    <p>🌐 An active internet connection is required to watch cartoons on Goofbox TV.</p>
+
+    <h2>Features:</h2>
+    <p>- Custom video player with play, pause, rewind, forward, next, and previous buttons.<br>
+    - Vertical marathon selector bar.<br>
+    - “Loading…” indicator when videos are buffering.<br>
+    - Lightweight and TV-friendly interface.</p>
+
+    <h2>Support:</h2>
+    <p>If you encounter any bugs, glitches, or have questions, email us at: <strong>eclipiastudios@gmail.com</strong></p>
+
+    <p>🚀 Sit back, relax, and enjoy the cartoons!</p>
+  </div>
 </div>
 
 <script>
@@ -406,7 +479,7 @@ const playlists = {
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/115%20Dawg%20Gawn%20-%20Little%20Audrey%20%281958-12-12%29.mp4",
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/Mice%20Capades%20%5BulORixwqAos%5D.mp4",
 "https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/Woody%20Woodpecker%20in%20Pantry%20Panic%20%28CENSORED%29%20%281941%29.mp4"
-  ],
+],
   looney: [
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E08.%20Lady%2C%20Play%20Your%20Mandolin%21%20%28Foxy%2C%20Roxy%29%28First%20MM%29%2813%29%5BHD%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E09.%20Smile%2C%20Darn%20Ya%2C%20Smile%21%20%28Foxy%2C%20Roxy%29%2814%29%5BHD%5D.mp4",
@@ -622,14 +695,16 @@ const playerWrapper = document.getElementById("playerWrapper");
 const videoPlayer = document.getElementById("videoPlayer");
 const startMessage = document.getElementById("startMessage");
 const loadingMessage = document.getElementById("loadingMessage");
+const aboutBtn = document.getElementById("aboutBtn");
 
+// Controls
 const playPauseBtn = document.getElementById("playPause");
 const rewindBtn = document.getElementById("rewind");
 const forwardBtn = document.getElementById("forward");
 const nextBtn = document.getElementById("next");
 const prevBtn = document.getElementById("prev");
-const aboutBtn = document.getElementById("aboutBtn");
 
+// Playlist state
 let currentPlaylistName = localStorage.getItem("playlist") || "all";
 let currentPlaylist = playlists[currentPlaylistName];
 let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
@@ -640,20 +715,14 @@ function hideLoading() { loadingMessage.style.display = "none"; }
 
 function playRandomFromPlaylist() {
   if (!currentPlaylist || currentPlaylist.length === 0) return;
-
   let index;
-  do {
-    index = Math.floor(Math.random() * currentPlaylist.length);
-  } while (index === lastIndex && currentPlaylist.length > 1);
-
+  do { index = Math.floor(Math.random() * currentPlaylist.length); } 
+  while (index === lastIndex && currentPlaylist.length > 1);
   lastIndex = index;
   videoPlayer.src = currentPlaylist[index];
   showLoading();
   videoPlayer.load();
-  videoPlayer.oncanplay = () => {
-    hideLoading();
-    videoPlayer.play();
-  };
+  videoPlayer.oncanplay = () => { hideLoading(); videoPlayer.play(); };
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
@@ -663,21 +732,18 @@ function playPrevious() {
   videoPlayer.src = currentPlaylist[lastIndex];
   showLoading();
   videoPlayer.load();
-  videoPlayer.oncanplay = () => {
-    hideLoading();
-    videoPlayer.play();
-  };
+  videoPlayer.oncanplay = () => { hideLoading(); videoPlayer.play(); };
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
-// ======= CONTROLS =======
+// Controls
 playPauseBtn.onclick = () => videoPlayer.paused ? videoPlayer.play() : videoPlayer.pause();
 rewindBtn.onclick = () => videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
 forwardBtn.onclick = () => videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
 nextBtn.onclick = playRandomFromPlaylist;
 prevBtn.onclick = playPrevious;
 
-// ======= MARATHONS =======
+// Marathon buttons
 document.querySelectorAll(".marathon-btn").forEach(btn => {
   btn.onclick = () => {
     const name = btn.dataset.playlist;
@@ -688,25 +754,20 @@ document.querySelectorAll(".marathon-btn").forEach(btn => {
   };
 });
 
-// ======= VIDEO EVENTS =======
+// Video events
 videoPlayer.addEventListener("ended", playRandomFromPlaylist);
 videoPlayer.addEventListener("play", () => startMessage.style.display = "none");
 
-// ======= ABOUT BUTTON =======
+// About modal
 aboutBtn.onclick = () => {
-  fetch('about.txt')
-    .then(resp => resp.text())
-    .then(text => {
-      document.getElementById("aboutContent").innerHTML = text + "<br><br>Email for support: support@example.com";
-      document.getElementById("aboutModal").style.display = "block";
-    });
+  document.getElementById("aboutModal").style.display = "block";
 };
 
 function closeAbout() {
   document.getElementById("aboutModal").style.display = "none";
 }
 
-// ======= BOOT =======
+// Boot sequence
 setTimeout(() => {
   splash.style.opacity = "0";
   setTimeout(() => {
