@@ -1,0 +1,30 @@
+🎉 Welcome to Goofbox TV! 🎉
+
+Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop from the comfort of your TV, tablet, or computer.
+
+Shows included:
+- Looney Tunes
+- Popeye
+- Noveltoons
+- The Three Stooges (60s series)
+- A full randomized marathon of over 200 cartoons!
+
+All cartoons hosted here are **public domain**, which means their original studios either didn’t renew their copyrights or the copyright notices were vague. The 1960s Three Stooges series has vague copyright notices but is safe to watch.  
+
+✅ **Safe for kids and everyone!**  
+You can enjoy these cartoons anytime without worrying about content — perfect for long cartoon marathons!
+
+🌐 **Note:** Goofbox TV requires an internet connection to stream cartoons.
+
+Features:
+- Custom video player with play, pause, rewind, forward, next, and previous buttons.
+- Vertical marathon selector bar to easily switch between shows.
+- “Loading…” indicator whenever a video is buffering.
+- Lightweight, TV-friendly interface for smooth viewing.
+
+Support:
+If you run into any bugs, glitches, or have questions, contact us anytime at:
+
+Email: support@example.com
+
+Sit back, relax, and enjoy the cartoons! 🚀🍿
