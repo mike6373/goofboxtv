@@ -141,22 +141,32 @@ html, body {
   transform: scale(0.9);
 }
 
-/* ABOUT SCREEN */
+/* ABOUT SCREEN (PAGINATED) */
 #aboutScreen {
   display: none;
   background: black;
   color: #00ff00;
   height: 100vh;
-  overflow-y: auto;
   padding: 40px 30px;
   font-size: 22px;
-  line-height: 1.6;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+#aboutContent {
+  text-align:left;
+  max-width:900px;
+  width:100%;
+}
+
+.aboutPage {
+  display:none;
 }
 
 #aboutScreen button {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  margin-top:30px;
   font-size: 22px;
   padding: 10px 15px;
   background: #ff8c00;
@@ -165,17 +175,18 @@ html, body {
   cursor: pointer;
 }
 
-/* About headings */
 #aboutScreen h1 {
   font-size: 30px;
   text-align: center;
   margin-bottom: 15px;
 }
+
 #aboutScreen h2 {
   font-size: 24px;
   margin-top: 20px;
   margin-bottom: 10px;
 }
+
 #aboutScreen p {
   margin-bottom: 12px;
 }
@@ -196,9 +207,7 @@ html, body {
     <video id="videoPlayer" autoplay></video>
 
     <!-- START & LOADING MESSAGES -->
-    <div id="startMessage">
-      ▶ Press PLAY to start watching fun cartoons!
-    </div>
+    <div id="startMessage">▶ Press PLAY to start watching fun cartoons!</div>
     <div id="loadingMessage">Loading...</div>
 
     <!-- CONTROLS -->
@@ -232,34 +241,42 @@ html, body {
   </div>
 </div>
 
-<!-- ABOUT SCREEN -->
+<!-- ABOUT SCREEN (PAGINATED WITH CLOSE) -->
 <div id="aboutScreen">
-  <button id="backBtn">⬅ Back</button>
-  <h1>🎉 Welcome to Goofbox TV! 🎉</h1>
-  <p>Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop from the comfort of your TV, tablet, or computer.</p>
-
-  <h2>Shows Included:</h2>
-  <p>- Looney Tunes<br>- Popeye<br>- Noveltoons<br>- The Three Stooges (60s series)<br>- 200+ cartoons in randomized marathon!</p>
-
-  <h2>Public Domain Info:</h2>
-  <p>All cartoons are public domain. The 60s Three Stooges series has vague copyright notices but is safe to watch.</p>
-
-  <h2>Safe for Everyone:</h2>
-  <p>✅ Safe for kids and adults! Perfect for marathon viewing.</p>
-
-  <h2>Internet Required:</h2>
-  <p>🌐 Requires an active internet connection to watch cartoons on Goofbox TV.</p>
-
-  <h2>Features:</h2>
-  <p>- Custom video player with play, pause, rewind, forward, next, and previous buttons.<br>
-  - Vertical marathon selector bar.<br>
-  - “Loading…” indicator when videos are buffering.<br>
-  - Lightweight and TV-friendly interface.</p>
-
-  <h2>Support:</h2>
-  <p>If you encounter bugs or glitches, email: <strong>eclipiastudios@gmail.com</strong></p>
-
-  <p>🚀 Sit back, relax, and enjoy the cartoons!</p>
+  <div id="aboutContent">
+    <div class="aboutPage" id="page1">
+      <h1>🎉 Welcome to Goofbox TV! 🎉</h1>
+      <p>Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop from the comfort of your TV, tablet, or computer.</p>
+    </div>
+    <div class="aboutPage" id="page2">
+      <h2>Shows Included:</h2>
+      <p>- Looney Tunes<br>- Popeye<br>- Noveltoons<br>- The Three Stooges (60s series)<br>- 200+ cartoons in randomized marathon!</p>
+      <h2>Public Domain Info:</h2>
+      <p>All cartoons are public domain. The 60s Three Stooges series has vague copyright notices but is safe to watch.</p>
+    </div>
+    <div class="aboutPage" id="page3">
+      <h2>Safe for Everyone:</h2>
+      <p>✅ Safe for kids and adults! Perfect for marathon viewing.</p>
+      <h2>Internet Required:</h2>
+      <p>🌐 Requires an active internet connection to watch cartoons on Goofbox TV.</p>
+    </div>
+    <div class="aboutPage" id="page4">
+      <h2>Features:</h2>
+      <p>- Custom video player with play, pause, rewind, forward, next, and previous buttons.<br>
+      - Vertical marathon selector bar.<br>
+      - “Loading…” indicator when videos are buffering.<br>
+      - Lightweight and TV-friendly interface.</p>
+      <h2>Support:</h2>
+      <p>If you encounter bugs or glitches, email: <strong>eclipiastudios@gmail.com</strong></p>
+      <p>🚀 Sit back, relax, and enjoy the cartoons!</p>
+    </div>
+  </div>
+  <!-- NAVIGATION BUTTONS -->
+  <div style="margin-top:30px; display:flex; gap:30px;">
+    <button id="aboutBack">⬅ Back</button>
+    <button id="aboutNext">Next ➡</button>
+    <button id="aboutClose" style="display:none;">❌ Close</button>
+  </div>
 </div>
 
 <script>
@@ -691,9 +708,12 @@ const prevBtn = document.getElementById("prev");
 
 const aboutBtn = document.getElementById("aboutBtn");
 const aboutScreen = document.getElementById("aboutScreen");
-const backBtn = document.getElementById("backBtn");
+const aboutNext = document.getElementById("aboutNext");
+const aboutBack = document.getElementById("aboutBack");
+const aboutClose = document.getElementById("aboutClose");
+const pages = document.querySelectorAll('.aboutPage');
 
-// ======= PLAYLIST STATE =======
+let currentPage = 0;
 let currentPlaylistName = localStorage.getItem("playlist") || "all";
 let currentPlaylist = playlists[currentPlaylistName];
 let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
@@ -725,6 +745,21 @@ function playPrevious() {
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
+function showPage(index){
+  pages.forEach((p,i)=> p.style.display = (i===index)?'block':'none');
+  aboutBack.style.display = (index===0)?'none':'inline-block';
+  if(index === pages.length-1){
+    aboutNext.style.display = 'none';
+    aboutClose.style.display = 'inline-block';
+  } else {
+    aboutNext.style.display = 'inline-block';
+    aboutClose.style.display = 'none';
+  }
+}
+
+// Initialize first page
+showPage(currentPage);
+
 // ======= CONTROL EVENTS =======
 playPauseBtn.onclick = () => videoPlayer.paused ? videoPlayer.play() : videoPlayer.pause();
 rewindBtn.onclick = () => videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
@@ -750,12 +785,30 @@ videoPlayer.addEventListener("play", () => startMessage.style.display = "none");
 // ======= ABOUT SCREEN EVENTS =======
 aboutBtn.onclick = () => {
   playerWrapper.style.display = "none";
-  aboutScreen.style.display = "block";
+  aboutScreen.style.display = "flex";
+  currentPage = 0;
+  showPage(currentPage);
 };
 
-backBtn.onclick = () => {
-  aboutScreen.style.display = "none";
-  playerWrapper.style.display = "flex";
+aboutNext.onclick = () => {
+  if(currentPage < pages.length-1){
+    currentPage++;
+    showPage(currentPage);
+  }
+};
+
+aboutBack.onclick = () => {
+  if(currentPage > 0){
+    currentPage--;
+    showPage(currentPage);
+  }
+};
+
+aboutClose.onclick = ()=>{
+  aboutScreen.style.display = 'none';
+  playerWrapper.style.display = 'flex';
+  currentPage = 0;
+  showPage(currentPage);
 };
 
 // ======= BOOT SEQUENCE =======
