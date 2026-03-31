@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Goofbox TV</title>
-
 <style>
 html, body {
   margin: 0;
@@ -58,7 +57,7 @@ html, body {
   background: black;
 }
 
-/* START MESSAGE */
+/* START MESSAGE / NOW PLAYING */
 #startMessage {
   position: absolute;
   inset: 0;
@@ -141,7 +140,7 @@ html, body {
   transform: scale(0.9);
 }
 
-/* ABOUT SCREEN (PAGINATED) */
+/* ABOUT SCREEN */
 #aboutScreen {
   display: none;
   background: black;
@@ -192,7 +191,6 @@ html, body {
 }
 </style>
 </head>
-
 <body>
 
 <!-- SPLASH -->
@@ -212,7 +210,6 @@ html, body {
 
     <!-- CONTROLS -->
     <div id="controls">
-      <button class="control-btn" id="prev">⏮</button>
       <button class="control-btn" id="rewind">⏪</button>
       <button class="control-btn" id="playPause">⏯</button>
       <button class="control-btn" id="forward">⏩</button>
@@ -241,7 +238,7 @@ html, body {
   </div>
 </div>
 
-<!-- ABOUT SCREEN (PAGINATED WITH CLOSE) -->
+<!-- ABOUT SCREEN -->
 <div id="aboutScreen">
   <div id="aboutContent">
     <div class="aboutPage" id="page1">
@@ -262,7 +259,7 @@ html, body {
     </div>
     <div class="aboutPage" id="page4">
       <h2>Features:</h2>
-      <p>- Custom video player with play, pause, rewind, forward, next, and previous buttons.<br>
+      <p>- Custom video player with play, pause, rewind, forward,and next buttons.<br>
       - Vertical marathon selector bar.<br>
       - “Loading…” indicator when videos are buffering.<br>
       - Lightweight and TV-friendly interface.</p>
@@ -271,7 +268,6 @@ html, body {
       <p>🚀 Sit back, relax, and enjoy the cartoons!</p>
     </div>
   </div>
-  <!-- NAVIGATION BUTTONS -->
   <div style="margin-top:30px; display:flex; gap:30px;">
     <button id="aboutBack">⬅ Back</button>
     <button id="aboutNext">Next ➡</button>
@@ -483,7 +479,7 @@ const playlists = {
 "https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/1954.01.01%20-%20Boo%20Moon.mp4",
 "https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/FLIP%20THE%20FROG%20Fiddlesticks%201930%20Ub%20Twerks%27s%20AWARD%20WINNING%20VINTAGE%20CARTOON.mp4",
 "https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/Wizard%20of%20Oz%20%281933%29.mp4"
-],
+  ],
   looney: [
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E08.%20Lady%2C%20Play%20Your%20Mandolin%21%20%28Foxy%2C%20Roxy%29%28First%20MM%29%2813%29%5BHD%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E09.%20Smile%2C%20Darn%20Ya%2C%20Smile%21%20%28Foxy%2C%20Roxy%29%2814%29%5BHD%5D.mp4",
@@ -545,7 +541,7 @@ const playlists = {
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1943E28.%20Puss%20n%20Booty%20%28418%29%5BHD%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/1936E04.%20Boom%20Boom%20%28Beans%2C%20Porky%29%28123%29%5BHQ%5D.mp4",
 "https://archive.org/download/bugsbunny-friends_202511/1937E22.%20Porky%27s%20Railroad%20%28Porky%29%28172%29%5BHD%5D.mp4"
-],
+  ],
   popeye: [
 "https://archive.org/download/popeye-pd/A%20Date%20To%20Skate%20%281938%29.mp4",
 "https://archive.org/download/popeye-pd/Aladdin%20And%20His%20Wonderful%20Lamp%20%281939%29.mp4",
@@ -582,7 +578,7 @@ const playlists = {
 "https://archive.org/download/popeye-pd/popeye-pd/Taxi-Turvy%20%281954%29.mp4",
 "https://archive.org/download/popeye-pd/popeye-pd/The%20Crystal%20Brawl%20%281957%29.mp4",
 "https://archive.org/download/popeye-pd/popeye-pd/The%20Paneless%20Window%20Washer%20%281937%29.mp4"
-],
+  ],
   noveltoons: [
 "https://archive.org/download/noveltoons-pd/013%20Old%20Macdonald%20Had%20A%20Farm%20%281946-06-07%29.mp4",
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/001%20No%20Mutton%20Fer%20Nuttin%20-%20Blackie%20%26%20Wolfie%20%281943-11-26%29.mp4",
@@ -630,8 +626,14 @@ const playlists = {
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/080%20Seapreme%20Court%20-%20Little%20Audrey%20%281954-01-29%29.mp4",
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/081%20Crazytown%20%281954-02-06%29.mp4",
 "https://archive.org/download/noveltoons-pd/noveltoons-pd/099%20Pest%20Pupil%20-%20Baby%20Huey%20%281957-01-25%29.mp4",
-"https://archive.org/download/noveltoons-pd/noveltoons-pd/115%20Dawg%20Gawn%20-%20Little%20Audrey%20%281958-12-12%29.mp4"
-],
+"https://archive.org/download/noveltoons-pd/noveltoons-pd/115%20Dawg%20Gawn%20-%20Little%20Audrey%20%281958-12-12%29.mp4",
+"https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/Woody%20Woodpecker%20in%20Pantry%20Panic%20%28CENSORED%29%20%281941%29.mp4",
+"https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/Wolf%21%20Wolf%21%20%281944%29.mp4",
+"https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/1949.07.30%20-%20Doggone%20Tired.mp4",
+"https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/1954.01.01%20-%20Boo%20Moon.mp4",
+"https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/FLIP%20THE%20FROG%20Fiddlesticks%201930%20Ub%20Twerks%27s%20AWARD%20WINNING%20VINTAGE%20CARTOON.mp4",
+"https://archive.org/download/woody-woodpecker-in-pantry-panic-censored-1941/Wizard%20of%20Oz%20%281933%29.mp4"
+  ],
   stooges: [
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%201.mp4",
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%201%2C%20Episode%2010.mp4",
@@ -685,8 +687,24 @@ const playlists = {
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%208.mp4",
 "https://archive.org/download/threestoogespd/The%20New%20Three%20Stooges_%20Season%204%2C%20Episode%209.mp4",
 "https://archive.org/download/threestoogespd/Three%20Stooges%20Cartoon%20-%20Season%202%20%20Ep%207.mp4"
-]
+  ]
 };
+
+// ======= “All” Marathon Sets =======
+const allMarathonSets = [
+  { name: "Looney Tunes", count: 4, videos: playlists.looney },
+  { name: "Popeye the Sailor", count: 4, videos: playlists.popeye },
+  { name: "Baby Huey & Friends", count: 4, videos: playlists.noveltoons },
+  { name: "The 3 Stooges", count: 2, videos: playlists.stooges }
+];
+
+let currentPlaylistName = localStorage.getItem("playlist") || "all";
+let currentPlaylist = playlists[currentPlaylistName];
+let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
+
+let allSetIndex = 0;
+let allVideoIndex = 0;
+let currentAllSet = [];
 
 // ======= ELEMENTS =======
 const splash = document.getElementById("splash");
@@ -699,7 +717,6 @@ const playPauseBtn = document.getElementById("playPause");
 const rewindBtn = document.getElementById("rewind");
 const forwardBtn = document.getElementById("forward");
 const nextBtn = document.getElementById("next");
-const prevBtn = document.getElementById("prev");
 
 const aboutBtn = document.getElementById("aboutBtn");
 const aboutScreen = document.getElementById("aboutScreen");
@@ -709,14 +726,14 @@ const aboutClose = document.getElementById("aboutClose");
 const pages = document.querySelectorAll('.aboutPage');
 
 let currentPage = 0;
-let currentPlaylistName = localStorage.getItem("playlist") || "all";
-let currentPlaylist = playlists[currentPlaylistName];
-let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
 
 // ======= FUNCTIONS =======
 function showLoading() { loadingMessage.style.display = "flex"; }
 function hideLoading() { loadingMessage.style.display = "none"; }
 
+function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+
+// Normal random video
 function playRandomFromPlaylist() {
   if (!currentPlaylist || currentPlaylist.length === 0) return;
   let index;
@@ -730,6 +747,7 @@ function playRandomFromPlaylist() {
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
+// Previous video
 function playPrevious() {
   if (!currentPlaylist || currentPlaylist.length === 0) return;
   lastIndex = (lastIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
@@ -740,6 +758,31 @@ function playPrevious() {
   localStorage.setItem("lastVideoIndex", lastIndex);
 }
 
+// ======= “All” Marathon Functions =======
+function playNextAllVideo() {
+  if (currentPlaylistName !== 'all') return playRandomFromPlaylist();
+  
+  if (allVideoIndex >= currentAllSet.length) {
+    allSetIndex++;
+    if (allSetIndex >= allMarathonSets.length) allSetIndex = 0;
+    const set = allMarathonSets[allSetIndex];
+    const shuffled = shuffle([...set.videos]);
+    currentAllSet = shuffled.slice(0, set.count);
+    allVideoIndex = 0;
+
+    startMessage.innerText = `▶ Now Playing: ${set.name}`;
+    startMessage.style.display = "flex";
+    setTimeout(() => startMessage.style.display = "none", 2500);
+  }
+
+  videoPlayer.src = currentAllSet[allVideoIndex];
+  showLoading();
+  videoPlayer.load();
+  videoPlayer.oncanplay = () => { hideLoading(); videoPlayer.play(); };
+  allVideoIndex++;
+}
+
+// ======= ABOUT SCREEN =======
 function showPage(index){
   pages.forEach((p,i)=> p.style.display = (i===index)?'block':'none');
   aboutBack.style.display = (index===0)?'none':'inline-block';
@@ -751,60 +794,48 @@ function showPage(index){
     aboutClose.style.display = 'none';
   }
 }
-
-// Initialize first page
 showPage(currentPage);
 
 // ======= CONTROL EVENTS =======
 playPauseBtn.onclick = () => videoPlayer.paused ? videoPlayer.play() : videoPlayer.pause();
 rewindBtn.onclick = () => videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
 forwardBtn.onclick = () => videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
-nextBtn.onclick = playRandomFromPlaylist;
-prevBtn.onclick = playPrevious();
+nextBtn.onclick = () => {
+  if (currentPlaylistName === 'all') playNextAllVideo();
+  else playRandomFromPlaylist();
+};
 
 // ======= MARATHON BUTTONS =======
 document.querySelectorAll(".marathon-btn").forEach(btn => {
   btn.onclick = () => {
     const name = btn.dataset.playlist;
     currentPlaylistName = name;
-    currentPlaylist = playlists[name];
     localStorage.setItem("playlist", name);
-    playRandomFromPlaylist();
+
+    if (name === 'all') {
+      allSetIndex = 0;
+      allVideoIndex = 0;
+      currentAllSet = [];
+      playNextAllVideo();
+    } else {
+      currentPlaylist = playlists[name];
+      playRandomFromPlaylist();
+    }
   };
 });
 
 // ======= VIDEO EVENTS =======
-videoPlayer.addEventListener("ended", playRandomFromPlaylist);
+videoPlayer.addEventListener("ended", () => {
+  if (currentPlaylistName === 'all') playNextAllVideo();
+  else playRandomFromPlaylist();
+});
 videoPlayer.addEventListener("play", () => startMessage.style.display = "none");
 
 // ======= ABOUT SCREEN EVENTS =======
-aboutBtn.onclick = () => {
-  playerWrapper.style.display = "none";
-  aboutScreen.style.display = "flex";
-  currentPage = 0;
-  showPage(currentPage);
-};
-
-aboutNext.onclick = () => {
-  if(currentPage < pages.length-1){
-    currentPage++;
-    showPage(currentPage);
-  }
-};
-
-aboutBack.onclick = () => {
-  if(currentPage > 0){
-    currentPage--;
-    showPage(currentPage);
-  }
-};
-
-aboutClose.onclick = ()=>{
-  aboutScreen.style.display = 'none';
-  playerWrapper.style.display = 'flex';
-  currentPage = 0;
-  showPage(currentPage);
-};
+aboutBtn.onclick = () => { playerWrapper.style.display = "none"; aboutScreen.style.display = "flex"; currentPage = 0; showPage(currentPage); };
+aboutNext.onclick = () => { if(currentPage < pages.length-1){ currentPage++; showPage(currentPage);} };
+aboutBack.onclick = () => { if(currentPage > 0){ currentPage--; showPage(currentPage);} };
+aboutClose.onclick = () => { aboutScreen.style.display = 'none'; playerWrapper.style.display = 'flex'; currentPage=0; showPage(currentPage); };
 
 // ======= BOOT SEQUENCE =======
 setTimeout(() => {
@@ -812,11 +843,11 @@ setTimeout(() => {
   setTimeout(() => {
     splash.style.display = "none";
     playerWrapper.style.display = "flex";
-    playRandomFromPlaylist();
+    if(currentPlaylistName === 'all') playNextAllVideo();
+    else playRandomFromPlaylist();
   }, 1000);
 }, 1500);
 </script>
 
 </body>
 </html>
-
