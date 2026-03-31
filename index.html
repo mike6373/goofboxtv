@@ -26,11 +26,7 @@ html, body {
   z-index: 10;
   transition: opacity 1s ease;
 }
-
-#splash img {
-  max-width: 70%;
-  max-height: 70%;
-}
+#splash img { max-width: 70%; max-height: 70%; }
 
 /* PLAYER WRAPPER */
 #playerWrapper {
@@ -57,37 +53,21 @@ html, body {
   background: black;
 }
 
-/* START MESSAGE / NOW PLAYING */
-#startMessage {
+/* START & LOADING MESSAGES */
+#startMessage, #loadingMessage {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
-  color: #00ff00;
-  background: rgba(0, 0, 0, 0.6);
   text-align: center;
   z-index: 5;
   pointer-events: none;
   text-shadow: 0 0 12px #00ff00;
 }
-
-/* LOADING MESSAGE */
-#loadingMessage {
-  position: absolute;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  color: #00ff00;
-  background: rgba(0, 0, 0, 0.6);
-  text-align: center;
-  z-index: 6;
-  pointer-events: none;
-  text-shadow: 0 0 12px #00ff00;
-}
+#startMessage { color:#00ff00; background: rgba(0,0,0,0.6); }
+#loadingMessage { color:#00ff00; background: rgba(0,0,0,0.6); display:none; }
 
 /* CONTROLS */
 #controls {
@@ -98,7 +78,6 @@ html, body {
   justify-content: center;
   gap: 20px;
 }
-
 .control-btn {
   font-size: 22px;
   padding: 15px 20px;
@@ -107,11 +86,7 @@ html, body {
   border-radius: 14px;
   cursor: pointer;
 }
-
-.control-btn:active {
-  transform: scale(0.95);
-  background: #ffa733;
-}
+.control-btn:active { transform: scale(0.95); background: #ffa733; }
 
 /* RIGHT SIDE MARATHON BAR */
 #marathons {
@@ -124,21 +99,9 @@ html, body {
   gap: 18px;
   border-left: 2px solid #222;
 }
-
-.marathon-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.marathon-btn img {
-  width: 80px;
-  height: auto;
-}
-
-.marathon-btn:active img {
-  transform: scale(0.9);
-}
+.marathon-btn { background:none; border:none; cursor:pointer; }
+.marathon-btn img { width:80px; height:auto; }
+.marathon-btn:active img { transform: scale(0.9); }
 
 /* ABOUT SCREEN */
 #aboutScreen {
@@ -153,17 +116,8 @@ html, body {
   justify-content:center;
   align-items:center;
 }
-
-#aboutContent {
-  text-align:left;
-  max-width:900px;
-  width:100%;
-}
-
-.aboutPage {
-  display:none;
-}
-
+#aboutContent { text-align:left; max-width:900px; width:100%; }
+.aboutPage { display:none; }
 #aboutScreen button {
   margin-top:30px;
   font-size: 22px;
@@ -173,22 +127,9 @@ html, body {
   border-radius: 12px;
   cursor: pointer;
 }
-
-#aboutScreen h1 {
-  font-size: 30px;
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-#aboutScreen h2 {
-  font-size: 24px;
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-#aboutScreen p {
-  margin-bottom: 12px;
-}
+#aboutScreen h1 { font-size: 30px; text-align:center; margin-bottom:15px; }
+#aboutScreen h2 { font-size:24px; margin-top:20px; margin-bottom:10px; }
+#aboutScreen p { margin-bottom:12px; }
 </style>
 </head>
 <body>
@@ -203,8 +144,6 @@ html, body {
   <!-- LEFT PANEL -->
   <div id="leftPanel">
     <video id="videoPlayer" autoplay></video>
-
-    <!-- START & LOADING MESSAGES -->
     <div id="startMessage">▶ Press PLAY to start watching fun cartoons!</div>
     <div id="loadingMessage">Loading...</div>
 
@@ -215,26 +154,17 @@ html, body {
       <button class="control-btn" id="forward">⏩</button>
       <button class="control-btn" id="next">⏭</button>
       <button class="control-btn" id="aboutBtn">ℹ️ About</button>
+      <button class="control-btn" id="toggleMarathons">📺 Toggle Marathons</button>
     </div>
   </div>
 
   <!-- RIGHT MARATHONS -->
   <div id="marathons">
-    <button class="marathon-btn" data-playlist="all">
-      <img src="icons/all.png" alt="All Cartoons">
-    </button>
-    <button class="marathon-btn" data-playlist="looney">
-      <img src="icons/looney.png" alt="Looney Tunes">
-    </button>
-    <button class="marathon-btn" data-playlist="popeye">
-      <img src="icons/popeye.PNG" alt="Popeye">
-    </button>
-    <button class="marathon-btn" data-playlist="noveltoons">
-      <img src="icons/noveltoons.PNG" alt="Noveltoons">
-    </button>
-    <button class="marathon-btn" data-playlist="stooges">
-      <img src="icons/stooges.png" alt="Three Stooges">
-    </button>
+    <button class="marathon-btn" data-playlist="all"><img src="icons/all.png" alt="All Cartoons"></button>
+    <button class="marathon-btn" data-playlist="looney"><img src="icons/looney.png" alt="Looney Tunes"></button>
+    <button class="marathon-btn" data-playlist="popeye"><img src="icons/popeye.PNG" alt="Popeye"></button>
+    <button class="marathon-btn" data-playlist="noveltoons"><img src="icons/noveltoons.PNG" alt="Noveltoons"></button>
+    <button class="marathon-btn" data-playlist="stooges"><img src="icons/stooges.png" alt="Three Stooges"></button>
   </div>
 </div>
 
@@ -243,29 +173,25 @@ html, body {
   <div id="aboutContent">
     <div class="aboutPage" id="page1">
       <h1>🎉 Welcome to Goofbox TV! 🎉</h1>
-      <p>Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop from the comfort of your TV, tablet, or computer.</p>
+      <p>Your ultimate public domain cartoon app! Watch hours (or even DAYS) of classic cartoons nonstop.</p>
     </div>
     <div class="aboutPage" id="page2">
       <h2>Shows Included:</h2>
-      <p>- Looney Tunes<br>- Popeye<br>- Noveltoons<br>- The Three Stooges (60s series)<br>- 200+ cartoons in randomized marathon!</p>
+      <p>- Looney Tunes<br>- Popeye<br>- Noveltoons<br>- The Three Stooges<br>- 200+ cartoons in randomized marathon!</p>
       <h2>Public Domain Info:</h2>
-      <p>All cartoons are public domain. The 60s Three Stooges series has vague copyright notices but is safe to watch.</p>
+      <p>All cartoons are public domain. 60s Three Stooges safe to watch.</p>
     </div>
     <div class="aboutPage" id="page3">
       <h2>Safe for Everyone:</h2>
-      <p>✅ Safe for kids and adults! Perfect for marathon viewing.</p>
+      <p>✅ Safe for kids and adults!</p>
       <h2>Internet Required:</h2>
-      <p>🌐 Requires an active internet connection to watch cartoons on Goofbox TV.</p>
+      <p>🌐 Active internet required.</p>
     </div>
     <div class="aboutPage" id="page4">
       <h2>Features:</h2>
-      <p>- Custom video player with play, pause, rewind, forward,and next buttons.<br>
-      - Vertical marathon selector bar.<br>
-      - “Loading…” indicator when videos are buffering.<br>
-      - Lightweight and TV-friendly interface.</p>
+      <p>- Custom video player controls<br>- Vertical marathon selector<br>- Loading indicator<br>- TV-friendly interface</p>
       <h2>Support:</h2>
-      <p>If you encounter bugs or glitches, email: <strong>eclipiastudios@gmail.com</strong></p>
-      <p>🚀 Sit back, relax, and enjoy the cartoons!</p>
+      <p>Email: <strong>eclipiastudios@gmail.com</strong></p>
     </div>
   </div>
   <div style="margin-top:30px; display:flex; gap:30px;">
@@ -276,7 +202,7 @@ html, body {
 </div>
 
 <script>
-// ======= VIDEO PLAYLISTS =======
+// ======= PLAYLISTS =======
 const playlists = {
   all: [
 "https://archive.org/download/bugsbunny-friends_202511/bugsbunny-friends/1931E08.%20Lady%2C%20Play%20Your%20Mandolin%21%20%28Foxy%2C%20Roxy%29%28First%20MM%29%2813%29%5BHD%5D.mp4",
@@ -701,10 +627,7 @@ const allMarathonSets = [
 let currentPlaylistName = localStorage.getItem("playlist") || "all";
 let currentPlaylist = playlists[currentPlaylistName];
 let lastIndex = parseInt(localStorage.getItem("lastVideoIndex")) || -1;
-
-let allSetIndex = 0;
-let allVideoIndex = 0;
-let currentAllSet = [];
+let allSetIndex = 0, allVideoIndex = 0, currentAllSet = [];
 
 // ======= ELEMENTS =======
 const splash = document.getElementById("splash");
@@ -712,141 +635,117 @@ const playerWrapper = document.getElementById("playerWrapper");
 const videoPlayer = document.getElementById("videoPlayer");
 const startMessage = document.getElementById("startMessage");
 const loadingMessage = document.getElementById("loadingMessage");
+const marathonsPanel = document.getElementById("marathons");
+const toggleMarathonsBtn = document.getElementById("toggleMarathons");
 
-const playPauseBtn = document.getElementById("playPause");
-const rewindBtn = document.getElementById("rewind");
-const forwardBtn = document.getElementById("forward");
-const nextBtn = document.getElementById("next");
-
-const aboutBtn = document.getElementById("aboutBtn");
-const aboutScreen = document.getElementById("aboutScreen");
-const aboutNext = document.getElementById("aboutNext");
-const aboutBack = document.getElementById("aboutBack");
-const aboutClose = document.getElementById("aboutClose");
-const pages = document.querySelectorAll('.aboutPage');
-
-let currentPage = 0;
+let marathonsVisible = true;
 
 // ======= FUNCTIONS =======
-function showLoading() { loadingMessage.style.display = "flex"; }
-function hideLoading() { loadingMessage.style.display = "none"; }
+function showLoading(){ loadingMessage.style.display="flex"; }
+function hideLoading(){ loadingMessage.style.display="none"; }
+function shuffle(arr){ return arr.sort(()=>Math.random()-0.5); }
 
-function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
-
-// Normal random video
-function playRandomFromPlaylist() {
-  if (!currentPlaylist || currentPlaylist.length === 0) return;
-  let index;
-  do { index = Math.floor(Math.random() * currentPlaylist.length); } 
-  while (index === lastIndex && currentPlaylist.length > 1);
-  lastIndex = index;
-  videoPlayer.src = currentPlaylist[index];
+// ======= NORMAL PLAY FUNCTIONS =======
+function playRandomFromPlaylist(){
+  if(!currentPlaylist||currentPlaylist.length===0) return;
+  let idx;
+  do { idx=Math.floor(Math.random()*currentPlaylist.length); }
+  while(idx===lastIndex && currentPlaylist.length>1);
+  lastIndex=idx;
+  videoPlayer.src=currentPlaylist[idx];
   showLoading();
   videoPlayer.load();
-  videoPlayer.oncanplay = () => { hideLoading(); videoPlayer.play(); };
-  localStorage.setItem("lastVideoIndex", lastIndex);
+  videoPlayer.oncanplay=()=>{ hideLoading(); videoPlayer.play(); };
+  localStorage.setItem("lastVideoIndex",lastIndex);
 }
-
-// Previous video
-function playPrevious() {
-  if (!currentPlaylist || currentPlaylist.length === 0) return;
-  lastIndex = (lastIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
-  videoPlayer.src = currentPlaylist[lastIndex];
+function playPrevious(){
+  if(!currentPlaylist||currentPlaylist.length===0) return;
+  lastIndex=(lastIndex-1+currentPlaylist.length)%currentPlaylist.length;
+  videoPlayer.src=currentPlaylist[lastIndex];
   showLoading();
   videoPlayer.load();
-  videoPlayer.oncanplay = () => { hideLoading(); videoPlayer.play(); };
-  localStorage.setItem("lastVideoIndex", lastIndex);
+  videoPlayer.oncanplay=()=>{ hideLoading(); videoPlayer.play(); };
+  localStorage.setItem("lastVideoIndex",lastIndex);
 }
 
-// ======= “All” Marathon Functions =======
-function playNextAllVideo() {
-  if (currentPlaylistName !== 'all') return playRandomFromPlaylist();
-  
-  if (allVideoIndex >= currentAllSet.length) {
+// ======= “All” MARATHON FUNCTIONS =======
+function playNextAllVideo(){
+  if(currentPlaylistName!=='all') return playRandomFromPlaylist();
+  if(allVideoIndex>=currentAllSet.length){
     allSetIndex++;
-    if (allSetIndex >= allMarathonSets.length) allSetIndex = 0;
-    const set = allMarathonSets[allSetIndex];
-    const shuffled = shuffle([...set.videos]);
-    currentAllSet = shuffled.slice(0, set.count);
-    allVideoIndex = 0;
-
-    startMessage.innerText = `▶ Now Playing: ${set.name}`;
-    startMessage.style.display = "flex";
-    setTimeout(() => startMessage.style.display = "none", 2500);
+    if(allSetIndex>=allMarathonSets.length) allSetIndex=0;
+    const set=allMarathonSets[allSetIndex];
+    const shuffled=shuffle([...set.videos]);
+    currentAllSet=shuffled.slice(0,set.count);
+    allVideoIndex=0;
+    startMessage.innerText=`▶ Now Playing: ${set.name}`;
+    startMessage.style.display="flex";
+    setTimeout(()=>startMessage.style.display="none",2500);
   }
-
-  videoPlayer.src = currentAllSet[allVideoIndex];
+  videoPlayer.src=currentAllSet[allVideoIndex];
   showLoading();
   videoPlayer.load();
-  videoPlayer.oncanplay = () => { hideLoading(); videoPlayer.play(); };
+  videoPlayer.oncanplay=()=>{ hideLoading(); videoPlayer.play(); };
   allVideoIndex++;
 }
 
 // ======= ABOUT SCREEN =======
-function showPage(index){
-  pages.forEach((p,i)=> p.style.display = (i===index)?'block':'none');
-  aboutBack.style.display = (index===0)?'none':'inline-block';
-  if(index === pages.length-1){
-    aboutNext.style.display = 'none';
-    aboutClose.style.display = 'inline-block';
+const pages=document.querySelectorAll(".aboutPage");
+function showPage(idx){
+  pages.forEach((p,i)=>p.style.display=(i===idx)?'block':'none');
+  document.getElementById("aboutBack").style.display=(idx===0)?'none':'inline-block';
+  if(idx===pages.length-1){
+    document.getElementById("aboutNext").style.display='none';
+    document.getElementById("aboutClose").style.display='inline-block';
   } else {
-    aboutNext.style.display = 'inline-block';
-    aboutClose.style.display = 'none';
+    document.getElementById("aboutNext").style.display='inline-block';
+    document.getElementById("aboutClose").style.display='none';
   }
 }
-showPage(currentPage);
+let currentPage=0; showPage(currentPage);
 
 // ======= CONTROL EVENTS =======
-playPauseBtn.onclick = () => videoPlayer.paused ? videoPlayer.play() : videoPlayer.pause();
-rewindBtn.onclick = () => videoPlayer.currentTime = Math.max(0, videoPlayer.currentTime - 10);
-forwardBtn.onclick = () => videoPlayer.currentTime = Math.min(videoPlayer.duration, videoPlayer.currentTime + 10);
-nextBtn.onclick = () => {
-  if (currentPlaylistName === 'all') playNextAllVideo();
-  else playRandomFromPlaylist();
-};
+document.getElementById("playPause").onclick=()=>videoPlayer.paused?videoPlayer.play():videoPlayer.pause();
+document.getElementById("rewind").onclick=()=>videoPlayer.currentTime=Math.max(0,videoPlayer.currentTime-10);
+document.getElementById("forward").onclick=()=>videoPlayer.currentTime=Math.min(videoPlayer.duration,videoPlayer.currentTime+10);
+document.getElementById("next").onclick=()=>{ currentPlaylistName==='all'?playNextAllVideo():playRandomFromPlaylist(); };
+document.getElementById("aboutBtn").onclick=()=>{ playerWrapper.style.display='none'; aboutScreen.style.display='flex'; currentPage=0; showPage(currentPage); };
+
+// ABOUT NAV
+document.getElementById("aboutNext").onclick=()=>{ if(currentPage<pages.length-1){ currentPage++; showPage(currentPage);} };
+document.getElementById("aboutBack").onclick=()=>{ if(currentPage>0){ currentPage--; showPage(currentPage);} };
+document.getElementById("aboutClose").onclick=()=>{ aboutScreen.style.display='none'; playerWrapper.style.display='flex'; currentPage=0; showPage(currentPage); };
 
 // ======= MARATHON BUTTONS =======
-document.querySelectorAll(".marathon-btn").forEach(btn => {
-  btn.onclick = () => {
-    const name = btn.dataset.playlist;
-    currentPlaylistName = name;
-    localStorage.setItem("playlist", name);
-
-    if (name === 'all') {
-      allSetIndex = 0;
-      allVideoIndex = 0;
-      currentAllSet = [];
-      playNextAllVideo();
-    } else {
-      currentPlaylist = playlists[name];
-      playRandomFromPlaylist();
-    }
+document.querySelectorAll(".marathon-btn").forEach(btn=>{
+  btn.onclick=()=>{
+    const name=btn.dataset.playlist;
+    currentPlaylistName=name;
+    localStorage.setItem("playlist",name);
+    if(name==='all'){ allSetIndex=0; allVideoIndex=0; currentAllSet=[]; playNextAllVideo(); }
+    else{ currentPlaylist=playlists[name]; playRandomFromPlaylist(); }
   };
 });
 
-// ======= VIDEO EVENTS =======
-videoPlayer.addEventListener("ended", () => {
-  if (currentPlaylistName === 'all') playNextAllVideo();
-  else playRandomFromPlaylist();
-});
-videoPlayer.addEventListener("play", () => startMessage.style.display = "none");
+// ======= TOGGLE MARATHONS =======
+toggleMarathonsBtn.onclick=()=>{
+  marathonsVisible=!marathonsVisible;
+  marathonsPanel.style.display=marathonsVisible?"flex":"none";
+};
 
-// ======= ABOUT SCREEN EVENTS =======
-aboutBtn.onclick = () => { playerWrapper.style.display = "none"; aboutScreen.style.display = "flex"; currentPage = 0; showPage(currentPage); };
-aboutNext.onclick = () => { if(currentPage < pages.length-1){ currentPage++; showPage(currentPage);} };
-aboutBack.onclick = () => { if(currentPage > 0){ currentPage--; showPage(currentPage);} };
-aboutClose.onclick = () => { aboutScreen.style.display = 'none'; playerWrapper.style.display = 'flex'; currentPage=0; showPage(currentPage); };
+// ======= VIDEO EVENTS =======
+videoPlayer.addEventListener("ended",()=>{ currentPlaylistName==='all'?playNextAllVideo():playRandomFromPlaylist(); });
+videoPlayer.addEventListener("play",()=>startMessage.style.display="none");
 
 // ======= BOOT SEQUENCE =======
-setTimeout(() => {
-  splash.style.opacity = "0";
-  setTimeout(() => {
-    splash.style.display = "none";
-    playerWrapper.style.display = "flex";
-    if(currentPlaylistName === 'all') playNextAllVideo();
-    else playRandomFromPlaylist();
-  }, 1000);
-}, 1500);
+setTimeout(()=>{
+  splash.style.opacity="0";
+  setTimeout(()=>{
+    splash.style.display="none";
+    playerWrapper.style.display="flex";
+    currentPlaylistName==='all'?playNextAllVideo():playRandomFromPlaylist();
+  },1000);
+},1500);
 </script>
 
 </body>
